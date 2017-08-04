@@ -14,7 +14,7 @@ type Response struct {
 	Label     string      `json:"label"`
 	Children  []*Elements `json:"children,omitempty"`
 	Parent    *Elements   `json:"parents,omitempty"`
-	//CodeURL      string `json:"code_url"`
+	URL       string      `json:"url"`
 }
 
 //Elements ...
@@ -23,7 +23,7 @@ type Elements struct {
 	LabelCode    string `json:"label_code"`
 	Label        string `json:"label"`
 	NoOfChildren int    `json:"number_of_children,omitempty"`
-	//CodeURL      string `json:"code_url"`
+	URL          string `json:"url,omitempty"`
 }
 
 func addElements(el []*stubs.Output, label string) []*Elements {
@@ -67,4 +67,20 @@ func (r *Response) AddParent(el []*stubs.Output, label string) *log.Data {
 	r.Parent = p[0]
 	return nil
 
+}
+
+//AddLinks ...
+func (r *Response) AddLinks(base string) {
+	if r.Parent != nil {
+		parts := strings.Split(base, "/")
+		r.Parent.URL = strings.Join(parts[0:len(parts)-1], "/")
+	}
+
+	if len(strings.Split(r.LabelCode, ".")) < 2 {
+		for k := range r.Children {
+			r.Children[k].URL = base + "/" + r.Children[k].LabelCode
+		}
+	}
+
+	r.URL = base
 }

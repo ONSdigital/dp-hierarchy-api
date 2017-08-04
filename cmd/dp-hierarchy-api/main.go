@@ -57,6 +57,7 @@ func hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	res.AddChildren(hierarchy[id].Children)
+	res.AddLinks(req.URL.String())
 
 	b, err := json.Marshal(res)
 	if err != nil {
@@ -101,6 +102,7 @@ func level1Handler(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	res.AddLinks(req.URL.String())
 
 	b, err := json.Marshal(res)
 	if err != nil {
@@ -147,6 +149,7 @@ func level2Handler(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	res.AddLinks(req.URL.String())
 
 	b, err := json.Marshal(res)
 	if err != nil {
@@ -192,6 +195,7 @@ func level2Handler(w http.ResponseWriter, req *http.Request) {
 
 	res.addChildren(item.Children)
 	res.addParent(item.Parents, label)
+	res.AddLinks(req.URL.String())
 
 	b, err := json.Marshal(res)
 	if err != nil {
