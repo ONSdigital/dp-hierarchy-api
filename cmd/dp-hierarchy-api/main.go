@@ -19,9 +19,9 @@ var hierarchy map[string]*stubs.Output
 
 func main() {
 	log.Namespace = "dp-hierarchy-api"
-	configuration, configErr := config.Get()
-	if configErr != nil {
-		log.Error(configErr, nil)
+	config, err := config.Get()
+	if err != nil {
+		log.Error(err, nil)
 		os.Exit(1)
 	}
 
