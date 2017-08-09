@@ -1,0 +1,137 @@
+CI_0004216,CPI (overall index)
+CI_0004217,01.1 Food
+CI_0004218,01.2 Non-alcoholic beverages
+CI_0004219,02.1 Alcoholic beverages
+CI_0004220,02.2 Tobacco
+CI_0004221,03.1 Clothing
+CI_0004222,03.2 Footwear including repairs
+CI_0004223,04.1 Actual rentals for housing
+CI_0004224,04.3 Regular maintenance and repair of the dwelling
+CI_0004225,04.4 Water supply and misc. services for the dwelling
+CI_0004226,"04.5 Electricity , gas and other fuels"
+CI_0004227,"05.1 Furniture, furnishings and carpets"
+CI_0004228,05.2 Household textiles
+CI_0004229,"05.3 Household appliances, fitting and repairs"
+CI_0004230,"05.4 Glassware, tableware and household utensils"
+CI_0004231,05.5 Tools and equipment for house and garden
+CI_0004232,05.6 Goods and services for routine maintenance
+CI_0004233,"06.1 Medical products, appliances and equipment"
+CI_0004234,07.1 Purchase of vehicles
+CI_0004235,07.2 Operation of personal transport equipment
+CI_0004236,07.3 Transport services
+CI_0004237,08.1 Postal services
+CI_0004238,08.2/3 Telephone and telefax equip
+CI_0004239,09.1 Audio-visual equipment and related products
+CI_0004240,"09.3 Other recreational items, gardens and pets"
+CI_0004241,09.4 Recreational and cultural services
+CI_0004242,"09.5 Books, newspapers and stationery"
+CI_0004243,09.6 Package holidays
+CI_0004244,10.0 Education
+CI_0004245,11.1 Catering services
+CI_0004246,11.2 Accommodation services
+CI_0004247,12.1 Personal care
+CI_0004248,12.3 Personal effects (nec)
+CI_0004249,12.5 Insurance
+CI_0004250,12.6 Financial services (nec)
+CI_0004251,12.7 Other services (nec)
+CI_0004252,01.1.1 Bread and cereals
+CI_0004253,01.1.2 Meat
+CI_0004254,01.1.3 Fish
+CI_0004255,"01.1.4 Milk, cheese and eggs"
+CI_0004256,01.1.5 Oils and fats
+CI_0004257,01.1.6 Fruit
+CI_0004258,01.1.7 Vegetables including potatoes and tubers
+CI_0004259,"01.1.8 Sugar, jam, syrups, chocolate and confectionery"
+CI_0004260,01.1.9 Food products (nec)
+CI_0004261,"01.2.1 Coffee, tea and cocoa"
+CI_0004262,"01.2.2 Mineral waters, soft drinks and juices"
+CI_0004263,02.1.1 Spirits
+CI_0004264,02.1.2 Wine
+CI_0004265,02.1.3 Beer
+CI_0004266,02.2.0 Tobacco
+CI_0004267,03.1.2 Garments
+CI_0004268,03.1.3 Other clothing and clothing accessories
+CI_0004269,"03.1.4 Cleaning, repair and hire of clothing"
+CI_0004270,03.2.0 Footwear including repairs
+CI_0004271,04.1.0 Actual rentals for housing
+CI_0004272,04.3.1 Materials for maintenance and repair
+CI_0004273,04.3.2 Services for maintenance and repair
+CI_0004274,04.4.1 Water supply
+CI_0004275,04.4.3 Sewerage collection
+CI_0004276,04.5.1 Electricity
+CI_0004277,04.5.2 Gas
+CI_0004278,04.5.3 Liquid fuels
+CI_0004279,04.5.4 Solid fuels
+CI_0004280,05.1.1 Furniture and furnishings
+CI_0004281,05.1.2 Carpets and other floor coverings
+CI_0004282,05.2.0 Household Textiles
+CI_0004283,05.3.1/2 Major appliances and small electric goods
+CI_0004284,05.3.3 Repair of household appliances
+CI_0004285,"05.4.0 Glassware, Tableware and Household Utensils"
+CI_0004286,05.5.0 Tools and equipment for House and Garden
+CI_0004287,05.6.1 Non-durable household goods
+CI_0004288,05.6.2 Domestic services and household services
+CI_0004289,06.1.1 Pharmaceutical products
+CI_0004290,06.1.2/3 Other medical and therapeutic equipment
+CI_0004291,07.1.2/3 Motorcycles and bicycles
+CI_0004292,07.1.1 New Cars
+CI_0004293,07.1.1b Second Hand Cars
+CI_0004294,07.2.1 Spare parts and accessories
+CI_0004295,07.2.2 Fuels and lubricants
+CI_0004296,07.2.3 Maintenance and repairs
+CI_0004297,07.2.4 Other services
+CI_0004298,07.3.1 Passenger transport by railway
+CI_0004299,07.3.2 Passenger transport by road
+CI_0004300,07.3.3 Passenger transport by air
+CI_0004301,07.3.4 Passenger transport by sea and inland waterway
+CI_0004302,08.1.0 Postal Services
+CI_0004303,08.2.0 Telephone and Telefax Equipment & Services
+CI_0004304,09.1.1 Reception and reproduction of sound and pictures
+CI_0004305,"09.1.2 Photographic, cinematographic and optical equipment"
+CI_0004306,09.1.3 Data processing equipment
+CI_0004307,09.1.4 Recording media
+CI_0004308,"09.1.5 Repair of audio-visual equipment , related products"
+CI_0004309,"09.3.1 Games, toys and hobbies"
+CI_0004310,09.3.2 Equipment for sport and open-air recreation
+CI_0004311,"09.3.3 Gardens, plants and flowers"
+CI_0004312,"09.3.4/5 Pets, related products and services"
+CI_0004313,09.4.1 Recreational and sporting services
+CI_0004314,09.4.2 Cultural services
+CI_0004315,09.5.1 Books
+CI_0004316,09.5.2 Newspapers and periodicals
+CI_0004317,"09.5.3/4 Misc. printed matter, stationery, drawing materials"
+CI_0004318,09.6.0 Package Holidays
+CI_0004319,10.0.0 Education
+CI_0004320,"11.1.1 Restaurants, cafes"
+CI_0004321,11.1.2 Canteens
+CI_0004322,11.2.0 Accommodation Services
+CI_0004323,12.1.1 Hairdressing and personal grooming establishments
+CI_0004324,12.1.2/3 Appliances and products for personal care
+CI_0004325,"12.3.1 Jewellery, clocks and watches"
+CI_0004326,12.3.2 Other personal effects
+CI_0004327,12.5.2 House contents insurance
+CI_0004328,12.5.4 Transport insurance
+CI_0004329,12.6.2 Other financial services (nec)
+CI_0004330,12.7.0 Other Services Not Elsewhere covered
+CI_0004331,01 Food and non-alcoholic beverages
+CI_0004332,02 Alcoholic beverages and tobacco
+CI_0004333,03 Clothing and footwear
+CI_0004334,"04 Housing, water, electricity, gas and other fuels"
+CI_0004335,"05 Furniture, household equipment and maintenance"
+CI_0004336,06 Health
+CI_0004337,07 Transport
+CI_0004338,08 Communication
+CI_0004339,09 Recreation and culture
+CI_0004340,10 Education
+CI_0004341,11 Restaurants and hotels
+CI_0004342,12 Miscellaneous goods and services
+CI_0004354,06.2 Out-patient services
+CI_0004355,06.3 Hospital services
+CI_0004356,9.2 Other major durables for recreation and culture
+CI_0004357,12.4 Social protection
+CI_0004358,"06.2.1/3 Medical services, paramedical services"
+CI_0004359,06.2.2 Dental services
+CI_0004360,06.3.0 Hospital Services
+CI_0004361,09.2.1/2 Major durables for in/outdoor recreation
+CI_0004362,12.4.0 Social Protection
+CI_0004363,12.5.3 Health insurance

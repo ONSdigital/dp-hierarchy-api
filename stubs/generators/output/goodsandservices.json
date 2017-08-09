@@ -1,0 +1,691 @@
+{
+ "id": "e44de4c4-d39e-4e2f-942b-3ca10584d078",
+ "name": "Goods and Services Indices",
+ "codes": {
+  "0311bd2e-af12-4e5f-871e-e8dcbe958f01": {
+   "id": "0311bd2e-af12-4e5f-871e-e8dcbe958f01",
+   "code": "CI_0004281",
+   "label": "05.1.2 Carpets and other floor coverings"
+  },
+  "037b3624-e0ad-4ad0-997b-93b5f09f84b5": {
+   "id": "037b3624-e0ad-4ad0-997b-93b5f09f84b5",
+   "code": "CI_0004253",
+   "label": "01.1.2 Meat"
+  },
+  "0536a123-20b8-4447-b273-a37792cdb3fe": {
+   "id": "0536a123-20b8-4447-b273-a37792cdb3fe",
+   "code": "CI_0004237",
+   "label": "08.1 Postal services"
+  },
+  "05e2bfbe-e499-4817-8815-4be786206873": {
+   "id": "05e2bfbe-e499-4817-8815-4be786206873",
+   "code": "CI_0004314",
+   "label": "09.4.2 Cultural services"
+  },
+  "0607bc1c-f776-4fc4-b28f-96e936c44ece": {
+   "id": "0607bc1c-f776-4fc4-b28f-96e936c44ece",
+   "code": "CI_0004267",
+   "label": "03.1.2 Garments"
+  },
+  "0791cae4-8a02-4e7f-83ac-9a4dfc9e0aff": {
+   "id": "0791cae4-8a02-4e7f-83ac-9a4dfc9e0aff",
+   "code": "CI_0004337",
+   "label": "07 Transport"
+  },
+  "0af3c771-59fc-468d-b194-e348ec2e1387": {
+   "id": "0af3c771-59fc-468d-b194-e348ec2e1387",
+   "code": "CI_0004255",
+   "label": "01.1.4 Milk, cheese and eggs"
+  },
+  "0ddbee1a-f0b0-4df2-aeca-008f81212733": {
+   "id": "0ddbee1a-f0b0-4df2-aeca-008f81212733",
+   "code": "CI_0004238",
+   "label": "08.2/3 Telephone and telefax equip"
+  },
+  "0ef36369-8e85-44bf-bbe8-ff1572ca1ee8": {
+   "id": "0ef36369-8e85-44bf-bbe8-ff1572ca1ee8",
+   "code": "CI_0004216",
+   "label": "CPI (overall index)"
+  },
+  "122864da-e9cc-4d32-a84e-93ae6d025457": {
+   "id": "122864da-e9cc-4d32-a84e-93ae6d025457",
+   "code": "CI_0004317",
+   "label": "09.5.3/4 Misc. printed matter, stationery, drawing materials"
+  },
+  "12748589-b4ee-4ae2-9ec3-49e66d006155": {
+   "id": "12748589-b4ee-4ae2-9ec3-49e66d006155",
+   "code": "CI_0004254",
+   "label": "01.1.3 Fish"
+  },
+  "15e797a2-10eb-475b-a507-2672f0fb17d1": {
+   "id": "15e797a2-10eb-475b-a507-2672f0fb17d1",
+   "code": "CI_0004248",
+   "label": "12.3 Personal effects (nec)"
+  },
+  "186b3a49-d062-4aa7-adcc-2c629a9aa9f8": {
+   "id": "186b3a49-d062-4aa7-adcc-2c629a9aa9f8",
+   "code": "CI_0004315",
+   "label": "09.5.1 Books"
+  },
+  "18d32585-7ad5-4b03-8c31-582eafbe7efd": {
+   "id": "18d32585-7ad5-4b03-8c31-582eafbe7efd",
+   "code": "CI_0004279",
+   "label": "04.5.4 Solid fuels"
+  },
+  "1906b72b-56bf-4c9a-ad16-c6ab3dd40366": {
+   "id": "1906b72b-56bf-4c9a-ad16-c6ab3dd40366",
+   "code": "CI_0004282",
+   "label": "05.2.0 Household Textiles"
+  },
+  "1ae5484a-666b-4451-84f1-afba852026ab": {
+   "id": "1ae5484a-666b-4451-84f1-afba852026ab",
+   "code": "CI_0004354",
+   "label": "06.2 Out-patient services"
+  },
+  "1d0af8a5-8613-4f18-a785-b237435feb6b": {
+   "id": "1d0af8a5-8613-4f18-a785-b237435feb6b",
+   "code": "CI_0004326",
+   "label": "12.3.2 Other personal effects"
+  },
+  "1d5016fc-f19b-46d5-bd31-7182fd5634e4": {
+   "id": "1d5016fc-f19b-46d5-bd31-7182fd5634e4",
+   "code": "CI_0004229",
+   "label": "05.3 Household appliances, fitting and repairs"
+  },
+  "1fc0e0ea-8e79-4e82-8933-9c74a963cc6e": {
+   "id": "1fc0e0ea-8e79-4e82-8933-9c74a963cc6e",
+   "code": "CI_0004243",
+   "label": "09.6 Package holidays"
+  },
+  "251ae027-bd2e-43c3-988f-963f5c4403a6": {
+   "id": "251ae027-bd2e-43c3-988f-963f5c4403a6",
+   "code": "CI_0004274",
+   "label": "04.4.1 Water supply"
+  },
+  "25b11cdd-8938-4777-b0c0-c70dd635b9f0": {
+   "id": "25b11cdd-8938-4777-b0c0-c70dd635b9f0",
+   "code": "CI_0004310",
+   "label": "09.3.2 Equipment for sport and open-air recreation"
+  },
+  "2750d00d-c544-45f7-a548-34e57fb96ed6": {
+   "id": "2750d00d-c544-45f7-a548-34e57fb96ed6",
+   "code": "CI_0004224",
+   "label": "04.3 Regular maintenance and repair of the dwelling"
+  },
+  "285c8485-89e6-40ff-9188-4ba74a47daf2": {
+   "id": "285c8485-89e6-40ff-9188-4ba74a47daf2",
+   "code": "CI_0004271",
+   "label": "04.1.0 Actual rentals for housing"
+  },
+  "2be13a0c-1d16-42fb-847a-01eeecf96faa": {
+   "id": "2be13a0c-1d16-42fb-847a-01eeecf96faa",
+   "code": "CI_0004359",
+   "label": "06.2.2 Dental services"
+  },
+  "2d020ba4-087a-46ba-8e24-a754adc0557e": {
+   "id": "2d020ba4-087a-46ba-8e24-a754adc0557e",
+   "code": "CI_0004316",
+   "label": "09.5.2 Newspapers and periodicals"
+  },
+  "2f353a31-6d36-4b24-ba46-41bbe2dda1f7": {
+   "id": "2f353a31-6d36-4b24-ba46-41bbe2dda1f7",
+   "code": "CI_0004244",
+   "label": "10.0 Education"
+  },
+  "3672e28f-efc4-4824-b652-e30478ae21a6": {
+   "id": "3672e28f-efc4-4824-b652-e30478ae21a6",
+   "code": "CI_0004303",
+   "label": "08.2.0 Telephone and Telefax Equipment \u0026 Services"
+  },
+  "36d0cf95-30a4-41a7-9b24-02d5d97e8d98": {
+   "id": "36d0cf95-30a4-41a7-9b24-02d5d97e8d98",
+   "code": "CI_0004222",
+   "label": "03.2 Footwear including repairs"
+  },
+  "37b076b5-6229-4346-b16c-e0d02a30b58c": {
+   "id": "37b076b5-6229-4346-b16c-e0d02a30b58c",
+   "code": "CI_0004329",
+   "label": "12.6.2 Other financial services (nec)"
+  },
+  "39acf975-53ce-4dc9-84f8-9248aeef16b7": {
+   "id": "39acf975-53ce-4dc9-84f8-9248aeef16b7",
+   "code": "CI_0004330",
+   "label": "12.7.0 Other Services Not Elsewhere covered"
+  },
+  "3a3177c8-9ac5-47c1-86fd-455b0d5ce35b": {
+   "id": "3a3177c8-9ac5-47c1-86fd-455b0d5ce35b",
+   "code": "CI_0004296",
+   "label": "07.2.3 Maintenance and repairs"
+  },
+  "3c034644-abf0-43d1-b6d7-3797f30ed5d8": {
+   "id": "3c034644-abf0-43d1-b6d7-3797f30ed5d8",
+   "code": "CI_0004275",
+   "label": "04.4.3 Sewerage collection"
+  },
+  "3c2500d4-6ddb-4718-9e0c-37cc3d4f4707": {
+   "id": "3c2500d4-6ddb-4718-9e0c-37cc3d4f4707",
+   "code": "CI_0004328",
+   "label": "12.5.4 Transport insurance"
+  },
+  "3c5d32bc-9e53-4b49-a4fd-a89a4fa1a195": {
+   "id": "3c5d32bc-9e53-4b49-a4fd-a89a4fa1a195",
+   "code": "CI_0004333",
+   "label": "03 Clothing and footwear"
+  },
+  "3ea0c606-9f01-4b74-a075-e34e94f33965": {
+   "id": "3ea0c606-9f01-4b74-a075-e34e94f33965",
+   "code": "CI_0004283",
+   "label": "05.3.1/2 Major appliances and small electric goods"
+  },
+  "43862ee3-de2a-439f-a152-fd7e500be6d2": {
+   "id": "43862ee3-de2a-439f-a152-fd7e500be6d2",
+   "code": "CI_0004223",
+   "label": "04.1 Actual rentals for housing"
+  },
+  "44d94467-d45f-4d40-b1c0-b92c25babc66": {
+   "id": "44d94467-d45f-4d40-b1c0-b92c25babc66",
+   "code": "CI_0004230",
+   "label": "05.4 Glassware, tableware and household utensils"
+  },
+  "44dddd9d-5636-4a24-9764-85c75c00ea91": {
+   "id": "44dddd9d-5636-4a24-9764-85c75c00ea91",
+   "code": "CI_0004221",
+   "label": "03.1 Clothing"
+  },
+  "47268720-1e7d-4372-8ab5-757605dffb4d": {
+   "id": "47268720-1e7d-4372-8ab5-757605dffb4d",
+   "code": "CI_0004321",
+   "label": "11.1.2 Canteens"
+  },
+  "473aa6fe-3655-4d29-9c1b-98224dc1f52f": {
+   "id": "473aa6fe-3655-4d29-9c1b-98224dc1f52f",
+   "code": "CI_0004334",
+   "label": "04 Housing, water, electricity, gas and other fuels"
+  },
+  "4b9c7a17-559b-4425-8ae6-14ce08ce280c": {
+   "id": "4b9c7a17-559b-4425-8ae6-14ce08ce280c",
+   "code": "CI_0004250",
+   "label": "12.6 Financial services (nec)"
+  },
+  "4bf9902b-b723-48cc-8f81-ec67bb8a7ad0": {
+   "id": "4bf9902b-b723-48cc-8f81-ec67bb8a7ad0",
+   "code": "CI_0004322",
+   "label": "11.2.0 Accommodation Services"
+  },
+  "4cd73f69-1250-40ae-9a4f-929fbd443f23": {
+   "id": "4cd73f69-1250-40ae-9a4f-929fbd443f23",
+   "code": "CI_0004264",
+   "label": "02.1.2 Wine"
+  },
+  "4dcb52df-93d2-476a-8be9-4d0079f10ef1": {
+   "id": "4dcb52df-93d2-476a-8be9-4d0079f10ef1",
+   "code": "CI_0004308",
+   "label": "09.1.5 Repair of audio-visual equipment , related products"
+  },
+  "4f97c382-4954-419b-b56b-910425aff172": {
+   "id": "4f97c382-4954-419b-b56b-910425aff172",
+   "code": "CI_0004311",
+   "label": "09.3.3 Gardens, plants and flowers"
+  },
+  "534259ef-1a6e-4b07-8904-015c8a711644": {
+   "id": "534259ef-1a6e-4b07-8904-015c8a711644",
+   "code": "CI_0004336",
+   "label": "06 Health"
+  },
+  "550f6acf-8612-4f04-b937-f35f85e90c8e": {
+   "id": "550f6acf-8612-4f04-b937-f35f85e90c8e",
+   "code": "CI_0004251",
+   "label": "12.7 Other services (nec)"
+  },
+  "551db580-a298-4deb-b4a5-6c2c3fbca89e": {
+   "id": "551db580-a298-4deb-b4a5-6c2c3fbca89e",
+   "code": "CI_0004294",
+   "label": "07.2.1 Spare parts and accessories"
+  },
+  "57e559f1-1026-4e5a-bb00-d04b2d2ac21f": {
+   "id": "57e559f1-1026-4e5a-bb00-d04b2d2ac21f",
+   "code": "CI_0004357",
+   "label": "12.4 Social protection"
+  },
+  "58b6b1dc-116c-4cd5-a52c-5ecacdb86537": {
+   "id": "58b6b1dc-116c-4cd5-a52c-5ecacdb86537",
+   "code": "CI_0004324",
+   "label": "12.1.2/3 Appliances and products for personal care"
+  },
+  "5f3de1ef-9697-4c1b-a3f7-83194e5a63ef": {
+   "id": "5f3de1ef-9697-4c1b-a3f7-83194e5a63ef",
+   "code": "CI_0004266",
+   "label": "02.2.0 Tobacco"
+  },
+  "63d0e5ac-6f7b-44f0-809d-a74e2bb86b84": {
+   "id": "63d0e5ac-6f7b-44f0-809d-a74e2bb86b84",
+   "code": "CI_0004240",
+   "label": "09.3 Other recreational items, gardens and pets"
+  },
+  "653fd510-ed51-484c-91c1-b1407923b88b": {
+   "id": "653fd510-ed51-484c-91c1-b1407923b88b",
+   "code": "CI_0004302",
+   "label": "08.1.0 Postal Services"
+  },
+  "6593affa-7d92-455c-aaf6-9ab4d9d0993f": {
+   "id": "6593affa-7d92-455c-aaf6-9ab4d9d0993f",
+   "code": "CI_0004291",
+   "label": "07.1.2/3 Motorcycles and bicycles"
+  },
+  "6ce3ea13-d768-43c3-bbaa-81070eaee47d": {
+   "id": "6ce3ea13-d768-43c3-bbaa-81070eaee47d",
+   "code": "CI_0004293",
+   "label": "07.1.1b Second Hand Cars"
+  },
+  "6d36f882-acc1-40e0-abb9-6724da2aa626": {
+   "id": "6d36f882-acc1-40e0-abb9-6724da2aa626",
+   "code": "CI_0004272",
+   "label": "04.3.1 Materials for maintenance and repair"
+  },
+  "6df294dd-c6ae-4da6-8b18-904de19fa9a0": {
+   "id": "6df294dd-c6ae-4da6-8b18-904de19fa9a0",
+   "code": "CI_0004304",
+   "label": "09.1.1 Reception and reproduction of sound and pictures"
+  },
+  "6f64dda2-5a1b-4afd-871e-a39dfdbf182b": {
+   "id": "6f64dda2-5a1b-4afd-871e-a39dfdbf182b",
+   "code": "CI_0004263",
+   "label": "02.1.1 Spirits"
+  },
+  "7198fae0-c314-439a-872a-28cb98a2a098": {
+   "id": "7198fae0-c314-439a-872a-28cb98a2a098",
+   "code": "CI_0004339",
+   "label": "09 Recreation and culture"
+  },
+  "73387e32-75b3-4ba1-ada8-64f85ae3b45e": {
+   "id": "73387e32-75b3-4ba1-ada8-64f85ae3b45e",
+   "code": "CI_0004355",
+   "label": "06.3 Hospital services"
+  },
+  "748e4699-e449-4c16-a445-ef498052b00e": {
+   "id": "748e4699-e449-4c16-a445-ef498052b00e",
+   "code": "CI_0004298",
+   "label": "07.3.1 Passenger transport by railway"
+  },
+  "7527b6ae-6de1-4539-ad38-f223a50783d9": {
+   "id": "7527b6ae-6de1-4539-ad38-f223a50783d9",
+   "code": "CI_0004276",
+   "label": "04.5.1 Electricity"
+  },
+  "75a42ae4-6f68-411b-9402-50e3a7692d60": {
+   "id": "75a42ae4-6f68-411b-9402-50e3a7692d60",
+   "code": "CI_0004233",
+   "label": "06.1 Medical products, appliances and equipment"
+  },
+  "78122805-313b-4914-86e6-f9d1ca59fa86": {
+   "id": "78122805-313b-4914-86e6-f9d1ca59fa86",
+   "code": "CI_0004239",
+   "label": "09.1 Audio-visual equipment and related products"
+  },
+  "78142ed9-7cec-443f-8e9f-d79b38539bca": {
+   "id": "78142ed9-7cec-443f-8e9f-d79b38539bca",
+   "code": "CI_0004312",
+   "label": "09.3.4/5 Pets, related products and services"
+  },
+  "7889caaa-5e4e-4274-a7b7-a2bb3a172723": {
+   "id": "7889caaa-5e4e-4274-a7b7-a2bb3a172723",
+   "code": "CI_0004305",
+   "label": "09.1.2 Photographic, cinematographic and optical equipment"
+  },
+  "7bfad72d-1b2d-4218-aadb-25a100ab71ce": {
+   "id": "7bfad72d-1b2d-4218-aadb-25a100ab71ce",
+   "code": "CI_0004258",
+   "label": "01.1.7 Vegetables including potatoes and tubers"
+  },
+  "7e3893ec-f68a-4dd7-90ae-6460911839c5": {
+   "id": "7e3893ec-f68a-4dd7-90ae-6460911839c5",
+   "code": "CI_0004241",
+   "label": "09.4 Recreational and cultural services"
+  },
+  "801d8e5d-8926-4fe2-bb38-7a5be1ee5ddb": {
+   "id": "801d8e5d-8926-4fe2-bb38-7a5be1ee5ddb",
+   "code": "CI_0004309",
+   "label": "09.3.1 Games, toys and hobbies"
+  },
+  "835b9c00-3e35-482c-b224-06a4c555d28e": {
+   "id": "835b9c00-3e35-482c-b224-06a4c555d28e",
+   "code": "CI_0004297",
+   "label": "07.2.4 Other services"
+  },
+  "85e0e03e-7fb8-49a5-a185-3d741e67982e": {
+   "id": "85e0e03e-7fb8-49a5-a185-3d741e67982e",
+   "code": "CI_0004286",
+   "label": "05.5.0 Tools and equipment for House and Garden"
+  },
+  "866ad8d0-abbd-4c67-919f-62cd8932e5f9": {
+   "id": "866ad8d0-abbd-4c67-919f-62cd8932e5f9",
+   "code": "CI_0004261",
+   "label": "01.2.1 Coffee, tea and cocoa"
+  },
+  "877f0f76-9258-4c21-82fa-342535d52639": {
+   "id": "877f0f76-9258-4c21-82fa-342535d52639",
+   "code": "CI_0004287",
+   "label": "05.6.1 Non-durable household goods"
+  },
+  "8782b957-dd35-4d65-af01-4f2962e2245d": {
+   "id": "8782b957-dd35-4d65-af01-4f2962e2245d",
+   "code": "CI_0004300",
+   "label": "07.3.3 Passenger transport by air"
+  },
+  "8853cbee-28bf-4b8b-988d-d91016727843": {
+   "id": "8853cbee-28bf-4b8b-988d-d91016727843",
+   "code": "CI_0004265",
+   "label": "02.1.3 Beer"
+  },
+  "89f3fb48-d1fe-45e6-b78e-3edfc3bb9769": {
+   "id": "89f3fb48-d1fe-45e6-b78e-3edfc3bb9769",
+   "code": "CI_0004273",
+   "label": "04.3.2 Services for maintenance and repair"
+  },
+  "8a336b88-df47-4921-97f1-f4f0296951bd": {
+   "id": "8a336b88-df47-4921-97f1-f4f0296951bd",
+   "code": "CI_0004356",
+   "label": "9.2 Other major durables for recreation and culture"
+  },
+  "8a7aaa6e-9bd1-41b5-846f-dbc6ec79810a": {
+   "id": "8a7aaa6e-9bd1-41b5-846f-dbc6ec79810a",
+   "code": "CI_0004259",
+   "label": "01.1.8 Sugar, jam, syrups, chocolate and confectionery"
+  },
+  "8c961bcf-f44a-496a-9bd3-81686e9027ef": {
+   "id": "8c961bcf-f44a-496a-9bd3-81686e9027ef",
+   "code": "CI_0004217",
+   "label": "01.1 Food"
+  },
+  "8de3afb7-b7a3-48b9-a983-7141bcb656a5": {
+   "id": "8de3afb7-b7a3-48b9-a983-7141bcb656a5",
+   "code": "CI_0004235",
+   "label": "07.2 Operation of personal transport equipment"
+  },
+  "8e7d59ff-4315-4f04-a478-228fafec3cff": {
+   "id": "8e7d59ff-4315-4f04-a478-228fafec3cff",
+   "code": "CI_0004319",
+   "label": "10.0.0 Education"
+  },
+  "905b784a-9284-4c88-ac9b-12da1e37efda": {
+   "id": "905b784a-9284-4c88-ac9b-12da1e37efda",
+   "code": "CI_0004331",
+   "label": "01 Food and non-alcoholic beverages"
+  },
+  "93c73c53-6d3a-4f05-ad8a-9df4297c31b1": {
+   "id": "93c73c53-6d3a-4f05-ad8a-9df4297c31b1",
+   "code": "CI_0004245",
+   "label": "11.1 Catering services"
+  },
+  "95784749-fec7-4bbf-9be0-f7654ec8dc90": {
+   "id": "95784749-fec7-4bbf-9be0-f7654ec8dc90",
+   "code": "CI_0004327",
+   "label": "12.5.2 House contents insurance"
+  },
+  "9a5330aa-f1c0-4305-97c9-13da69ba9865": {
+   "id": "9a5330aa-f1c0-4305-97c9-13da69ba9865",
+   "code": "CI_0004268",
+   "label": "03.1.3 Other clothing and clothing accessories"
+  },
+  "9a6e3f47-b4c7-4d0d-8b30-9e1efbe3646e": {
+   "id": "9a6e3f47-b4c7-4d0d-8b30-9e1efbe3646e",
+   "code": "CI_0004307",
+   "label": "09.1.4 Recording media"
+  },
+  "a323e866-ea31-40be-aa1d-f22c8d14b726": {
+   "id": "a323e866-ea31-40be-aa1d-f22c8d14b726",
+   "code": "CI_0004332",
+   "label": "02 Alcoholic beverages and tobacco"
+  },
+  "a351a0cf-0bab-40d9-bbe1-29a96e1d1aa8": {
+   "id": "a351a0cf-0bab-40d9-bbe1-29a96e1d1aa8",
+   "code": "CI_0004220",
+   "label": "02.2 Tobacco"
+  },
+  "a6fa9c6a-11bd-452b-ac49-e00bb9fdddfa": {
+   "id": "a6fa9c6a-11bd-452b-ac49-e00bb9fdddfa",
+   "code": "CI_0004362",
+   "label": "12.4.0 Social Protection"
+  },
+  "a7562fe6-9271-4f30-b03e-1555d9f44ed4": {
+   "id": "a7562fe6-9271-4f30-b03e-1555d9f44ed4",
+   "code": "CI_0004301",
+   "label": "07.3.4 Passenger transport by sea and inland waterway"
+  },
+  "aaad3571-8ecb-4d3a-828c-4cddaedff68f": {
+   "id": "aaad3571-8ecb-4d3a-828c-4cddaedff68f",
+   "code": "CI_0004260",
+   "label": "01.1.9 Food products (nec)"
+  },
+  "ac29dc68-bc72-4609-870d-bb085c16877c": {
+   "id": "ac29dc68-bc72-4609-870d-bb085c16877c",
+   "code": "CI_0004225",
+   "label": "04.4 Water supply and misc. services for the dwelling"
+  },
+  "ae8027f4-7770-44be-83e8-02080e9843a7": {
+   "id": "ae8027f4-7770-44be-83e8-02080e9843a7",
+   "code": "CI_0004342",
+   "label": "12 Miscellaneous goods and services"
+  },
+  "afa9f0f7-d959-405f-ad28-062da54b4b79": {
+   "id": "afa9f0f7-d959-405f-ad28-062da54b4b79",
+   "code": "CI_0004313",
+   "label": "09.4.1 Recreational and sporting services"
+  },
+  "b1da602a-d0f2-47a8-821e-8382ff801f28": {
+   "id": "b1da602a-d0f2-47a8-821e-8382ff801f28",
+   "code": "CI_0004288",
+   "label": "05.6.2 Domestic services and household services"
+  },
+  "b270b7e4-0eb2-4aba-8886-92e585b8688c": {
+   "id": "b270b7e4-0eb2-4aba-8886-92e585b8688c",
+   "code": "CI_0004246",
+   "label": "11.2 Accommodation services"
+  },
+  "b47100bb-c4e5-4ca6-9476-842e84321055": {
+   "id": "b47100bb-c4e5-4ca6-9476-842e84321055",
+   "code": "CI_0004363",
+   "label": "12.5.3 Health insurance"
+  },
+  "b54fa4c1-0775-4eaf-986e-e06be39615d8": {
+   "id": "b54fa4c1-0775-4eaf-986e-e06be39615d8",
+   "code": "CI_0004218",
+   "label": "01.2 Non-alcoholic beverages"
+  },
+  "b57526a4-f47e-493c-99c2-8000bdf51c83": {
+   "id": "b57526a4-f47e-493c-99c2-8000bdf51c83",
+   "code": "CI_0004232",
+   "label": "05.6 Goods and services for routine maintenance"
+  },
+  "b587b959-320d-4483-a7d5-8f46ddf8e7ad": {
+   "id": "b587b959-320d-4483-a7d5-8f46ddf8e7ad",
+   "code": "CI_0004234",
+   "label": "07.1 Purchase of vehicles"
+  },
+  "b6b86380-b49b-44e0-9e7a-09d303efb14b": {
+   "id": "b6b86380-b49b-44e0-9e7a-09d303efb14b",
+   "code": "CI_0004284",
+   "label": "05.3.3 Repair of household appliances"
+  },
+  "be5015f8-ca85-44b2-bd05-a7583c9a60ae": {
+   "id": "be5015f8-ca85-44b2-bd05-a7583c9a60ae",
+   "code": "CI_0004228",
+   "label": "05.2 Household textiles"
+  },
+  "c00c65a6-7ef8-4265-868c-aa819924c57a": {
+   "id": "c00c65a6-7ef8-4265-868c-aa819924c57a",
+   "code": "CI_0004299",
+   "label": "07.3.2 Passenger transport by road"
+  },
+  "c0e05969-5f53-445f-9fcc-8c85b7bc804f": {
+   "id": "c0e05969-5f53-445f-9fcc-8c85b7bc804f",
+   "code": "CI_0004285",
+   "label": "05.4.0 Glassware, Tableware and Household Utensils"
+  },
+  "c1e8f6dc-6c8c-472b-81f0-7e4bbc4c9b40": {
+   "id": "c1e8f6dc-6c8c-472b-81f0-7e4bbc4c9b40",
+   "code": "CI_0004338",
+   "label": "08 Communication"
+  },
+  "c2862104-fe5b-4fd8-87eb-b01734a3cfe7": {
+   "id": "c2862104-fe5b-4fd8-87eb-b01734a3cfe7",
+   "code": "CI_0004361",
+   "label": "09.2.1/2 Major durables for in/outdoor recreation"
+  },
+  "c3eb9e2e-8820-4137-b5bb-7633a8b6f58e": {
+   "id": "c3eb9e2e-8820-4137-b5bb-7633a8b6f58e",
+   "code": "CI_0004227",
+   "label": "05.1 Furniture, furnishings and carpets"
+  },
+  "c67b7dcf-1aaf-4563-b5d0-89d5ae294b06": {
+   "id": "c67b7dcf-1aaf-4563-b5d0-89d5ae294b06",
+   "code": "CI_0004335",
+   "label": "05 Furniture, household equipment and maintenance"
+  },
+  "c6caf9df-3192-4e2d-bcdd-6aaf577c2c5f": {
+   "id": "c6caf9df-3192-4e2d-bcdd-6aaf577c2c5f",
+   "code": "CI_0004360",
+   "label": "06.3.0 Hospital Services"
+  },
+  "c783f238-fda4-4460-b320-daf51bba92d8": {
+   "id": "c783f238-fda4-4460-b320-daf51bba92d8",
+   "code": "CI_0004320",
+   "label": "11.1.1 Restaurants, cafes"
+  },
+  "cbf5fd8e-2f6a-432e-bbba-3329cb847176": {
+   "id": "cbf5fd8e-2f6a-432e-bbba-3329cb847176",
+   "code": "CI_0004340",
+   "label": "10 Education"
+  },
+  "ce15048a-66be-4802-a23a-15f640c4633c": {
+   "id": "ce15048a-66be-4802-a23a-15f640c4633c",
+   "code": "CI_0004252",
+   "label": "01.1.1 Bread and cereals"
+  },
+  "d163cd8d-04e8-48d6-8aab-1eb27526f528": {
+   "id": "d163cd8d-04e8-48d6-8aab-1eb27526f528",
+   "code": "CI_0004231",
+   "label": "05.5 Tools and equipment for house and garden"
+  },
+  "d3f5c589-e4e8-45ef-b1a0-0dc2c32247f4": {
+   "id": "d3f5c589-e4e8-45ef-b1a0-0dc2c32247f4",
+   "code": "CI_0004278",
+   "label": "04.5.3 Liquid fuels"
+  },
+  "d4e8f842-fed6-4537-92e3-2e2f61f8de91": {
+   "id": "d4e8f842-fed6-4537-92e3-2e2f61f8de91",
+   "code": "CI_0004269",
+   "label": "03.1.4 Cleaning, repair and hire of clothing"
+  },
+  "d51d4201-2d7b-4bd1-8e58-8fd08fbc3a98": {
+   "id": "d51d4201-2d7b-4bd1-8e58-8fd08fbc3a98",
+   "code": "CI_0004292",
+   "label": "07.1.1 New Cars"
+  },
+  "d68e62de-137b-4446-933e-b531125c3b34": {
+   "id": "d68e62de-137b-4446-933e-b531125c3b34",
+   "code": "CI_0004295",
+   "label": "07.2.2 Fuels and lubricants"
+  },
+  "d7ba1481-a2fb-4f7f-84e2-98ff316e2e04": {
+   "id": "d7ba1481-a2fb-4f7f-84e2-98ff316e2e04",
+   "code": "CI_0004318",
+   "label": "09.6.0 Package Holidays"
+  },
+  "da463d81-c11f-46bd-be1e-16fe999d7583": {
+   "id": "da463d81-c11f-46bd-be1e-16fe999d7583",
+   "code": "CI_0004289",
+   "label": "06.1.1 Pharmaceutical products"
+  },
+  "dcda0ed6-4ec2-4dec-a81a-196e5975cc39": {
+   "id": "dcda0ed6-4ec2-4dec-a81a-196e5975cc39",
+   "code": "CI_0004325",
+   "label": "12.3.1 Jewellery, clocks and watches"
+  },
+  "e13aa20b-1c12-4e26-aaf3-19fec179ad0f": {
+   "id": "e13aa20b-1c12-4e26-aaf3-19fec179ad0f",
+   "code": "CI_0004290",
+   "label": "06.1.2/3 Other medical and therapeutic equipment"
+  },
+  "e2881add-271e-47af-9d49-1f0cd5aebf9c": {
+   "id": "e2881add-271e-47af-9d49-1f0cd5aebf9c",
+   "code": "CI_0004306",
+   "label": "09.1.3 Data processing equipment"
+  },
+  "e5f53432-c76a-42e0-ac0b-c2c77c4f4a34": {
+   "id": "e5f53432-c76a-42e0-ac0b-c2c77c4f4a34",
+   "code": "CI_0004341",
+   "label": "11 Restaurants and hotels"
+  },
+  "e870c308-1d76-4f58-a023-1bf232090eb6": {
+   "id": "e870c308-1d76-4f58-a023-1bf232090eb6",
+   "code": "CI_0004249",
+   "label": "12.5 Insurance"
+  },
+  "e8803dd0-57ea-416c-8f5c-c4d7f253a51b": {
+   "id": "e8803dd0-57ea-416c-8f5c-c4d7f253a51b",
+   "code": "CI_0004270",
+   "label": "03.2.0 Footwear including repairs"
+  },
+  "eb4c038e-45a3-4cf2-8cb2-05eb03c00468": {
+   "id": "eb4c038e-45a3-4cf2-8cb2-05eb03c00468",
+   "code": "CI_0004247",
+   "label": "12.1 Personal care"
+  },
+  "ed9388fc-9bcd-4651-a02c-cb2bd70b5292": {
+   "id": "ed9388fc-9bcd-4651-a02c-cb2bd70b5292",
+   "code": "CI_0004242",
+   "label": "09.5 Books, newspapers and stationery"
+  },
+  "efa8903a-84f3-467b-b2b8-ddfb165a6823": {
+   "id": "efa8903a-84f3-467b-b2b8-ddfb165a6823",
+   "code": "CI_0004358",
+   "label": "06.2.1/3 Medical services, paramedical services"
+  },
+  "f3d328c8-aafc-412e-b7d8-d6dd5952b1b5": {
+   "id": "f3d328c8-aafc-412e-b7d8-d6dd5952b1b5",
+   "code": "CI_0004277",
+   "label": "04.5.2 Gas"
+  },
+  "f5762951-bc2f-49db-81a1-771b88dbc17f": {
+   "id": "f5762951-bc2f-49db-81a1-771b88dbc17f",
+   "code": "CI_0004280",
+   "label": "05.1.1 Furniture and furnishings"
+  },
+  "f5d9093d-bb18-472e-8cec-d400a3475622": {
+   "id": "f5d9093d-bb18-472e-8cec-d400a3475622",
+   "code": "CI_0004262",
+   "label": "01.2.2 Mineral waters, soft drinks and juices"
+  },
+  "f7180f61-d1df-4ac4-822d-1641a02d81df": {
+   "id": "f7180f61-d1df-4ac4-822d-1641a02d81df",
+   "code": "CI_0004256",
+   "label": "01.1.5 Oils and fats"
+  },
+  "f8041cf2-0dfe-4b23-beec-ce2e54a00cd6": {
+   "id": "f8041cf2-0dfe-4b23-beec-ce2e54a00cd6",
+   "code": "CI_0004257",
+   "label": "01.1.6 Fruit"
+  },
+  "f8f48689-bbb7-436b-b0b8-f84553dea6dd": {
+   "id": "f8f48689-bbb7-436b-b0b8-f84553dea6dd",
+   "code": "CI_0004226",
+   "label": "04.5 Electricity , gas and other fuels"
+  },
+  "fb290fb4-f622-402b-979e-f51e567902f1": {
+   "id": "fb290fb4-f622-402b-979e-f51e567902f1",
+   "code": "CI_0004323",
+   "label": "12.1.1 Hairdressing and personal grooming establishments"
+  },
+  "fb5b830f-e46d-4cad-bc3f-035e59cd0ae6": {
+   "id": "fb5b830f-e46d-4cad-bc3f-035e59cd0ae6",
+   "code": "CI_0004219",
+   "label": "02.1 Alcoholic beverages"
+  },
+  "feae5d33-1c37-4f60-b29b-a401e596f35f": {
+   "id": "feae5d33-1c37-4f60-b29b-a401e596f35f",
+   "code": "CI_0004236",
+   "label": "07.3 Transport services"
+  }
+ }
+}
