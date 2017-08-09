@@ -32,7 +32,6 @@ func main() {
 	router.Path("/hierarchies/{id}").HandlerFunc(hierarchiesHandler)
 	router.Path("/hierarchies/{id}/{level1}").HandlerFunc(level1Handler)
 	router.Path("/hierarchies/{id}/{level1}/{level2}").HandlerFunc(level2Handler)
-	//router.Path("/hierarchies/{id}/{level1}/{level2}/{level3}").HandlerFunc(level3Handler)
 
 	log.Debug("starting http server", log.Data{"bind_addr": configuration.BindAddr})
 	srv := server.New(configuration.BindAddr, router)
@@ -161,49 +160,3 @@ func level2Handler(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
 }
-
-//Not needed for CPI dataset - will need to be changed as the "level3"
-//argument contains a / - i.e. "3/4"
-/* func level3Handler(w http.ResponseWriter, req *http.Request) {
-	id := mux.Vars(req)["id"]
-	level1 := mux.Vars(req)["level1"]
-	level2 := mux.Vars(req)["level2"]
-	level3 := mux.Vars(req)["level3"]
-	label := level1 + "." + level2 + "." + level3
-	if id != "CPI" {
-		log.DebugR(req, "hierarchy not found", log.Data{"id": id})
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	v := &valid{
-		r:  req,
-		w:  w,
-		id: id,
-	}
-
-	if ok := v.validate(level1, level2, level3); !ok {
-		return
-	}
-
-	item := hierarchy[label]
-	res := &response{
-		ID:        item.ID,
-		LabelCode: item.LabelCode,
-		Label:     item.Label,
-	}
-
-	res.addChildren(item.Children)
-	res.addParent(item.Parents, label)
-	res.AddLinks(req.URL.String())
-
-	b, err := json.Marshal(res)
-	if err != nil {
-		log.ErrorR(req, err, nil)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
-} */

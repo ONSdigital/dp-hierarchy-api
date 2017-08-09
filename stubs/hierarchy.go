@@ -16,7 +16,6 @@ type Output struct {
 	Children     []*Output `json:"children,omitempty"`
 	Parents      []*Output `json:"parents,omitempty"`
 	NoOfChildren int       `json:"number_of_children,omitempty"`
-	//CodeURL      string `json:"code_url"`
 }
 
 func (o *Output) addChildren(child *Output) {

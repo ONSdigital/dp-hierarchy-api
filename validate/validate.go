@@ -34,12 +34,6 @@ func (r *Request) Validate(levels ...string) bool {
 		}
 	}
 
-	/* if len(levels) > 2 {
-		if ok := v.validateLevel3(levels[0], levels[1], levels[2]); !ok {
-			return false
-		}
-	} */
-
 	return true
 }
 
@@ -71,26 +65,3 @@ func (r *Request) validateLevel2(level1, level2 string) bool {
 	r.W.WriteHeader(http.StatusNotFound)
 	return false
 }
-
-//Level3 handler has been removed pending changes, so this check is not needed
-/*func (v *valid) validateLevel3(level1, level2, level3 string) bool {
-	label := level1 + "." + level2
-	fullLabel := label + "." + level3
-
-	for _, c := range hierarchy[label].Children {
-		l := strings.Split(c.LabelCode, ".")
-		if len(l) != 3 {
-			log.DebugR(v.r, "invalid child element found", log.Data{"id": v.id, "label": fullLabel, "labelCode": c.LabelCode})
-			v.w.WriteHeader(http.StatusBadRequest)
-			return false
-		}
-
-		if l[2] == level3 {
-			return true
-		}
-	}
-
-	log.DebugR(v.r, "second level hierarchy element not found", log.Data{"id": v.id, "level1": level1, "level2": level2, "level3": level3})
-	v.w.WriteHeader(http.StatusNotFound)
-	return false
-} */
