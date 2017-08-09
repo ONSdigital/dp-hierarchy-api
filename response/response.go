@@ -13,7 +13,7 @@ type Response struct {
 	LabelCode string      `json:"label_code"`
 	Label     string      `json:"label"`
 	Children  []*Elements `json:"children,omitempty"`
-	Parent    *Elements   `json:"parents,omitempty"`
+	Parent    *Elements   `json:"parent,omitempty"`
 	URL       string      `json:"url"`
 }
 
