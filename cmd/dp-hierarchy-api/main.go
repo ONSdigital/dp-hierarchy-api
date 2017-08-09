@@ -33,8 +33,8 @@ func main() {
 	router.Path("/hierarchies/{id}/{level1}").HandlerFunc(level1Handler)
 	router.Path("/hierarchies/{id}/{level1}/{level2}").HandlerFunc(level2Handler)
 
-	log.Debug("starting http server", log.Data{"bind_addr": configuration.BindAddr})
-	srv := server.New(configuration.BindAddr, router)
+	log.Debug("starting http server", log.Data{"bind_addr": config.BindAddr})
+	srv := server.New(config.BindAddr, router)
 	if err := srv.ListenAndServe(); err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
