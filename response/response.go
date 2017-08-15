@@ -23,6 +23,7 @@ type Elements struct {
 	LabelCode    string `json:"label_code"`
 	Label        string `json:"label"`
 	NoOfChildren int    `json:"number_of_children,omitempty"`
+	CodeListURL  string `json:"code_list_url,omitempty"`
 	URL          string `json:"url,omitempty"`
 }
 
@@ -36,9 +37,10 @@ func addElements(el []*stubs.Output, label string) []*Elements {
 		}
 
 		e := &Elements{
-			ID:        v.ID,
-			Label:     v.Label,
-			LabelCode: v.LabelCode,
+			ID:          v.ID,
+			Label:       v.Label,
+			LabelCode:   v.LabelCode,
+			CodeListURL: "/code-lists/e44de4c4-d39e-4e2f-942b-3ca10584d078/codes/" + v.ID,
 		}
 
 		if len(label) == 0 && len(strings.Split(e.LabelCode, ".")) != 3 {
