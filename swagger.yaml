@@ -95,6 +95,21 @@ definitions:
           type: object
           items:
               $ref: '#/definitions/HierarchyChild'
+          example:
+            - label: "Transport"
+              code: "01"
+              no_of_children: 3
+              links: {
+                self: "/hierarchies/{instance_ID/Special_Aggregat/01",
+                code: "code-lists/{code-list-id}/codes/01"
+              }
+            - label: "Grains"
+              code: "02"
+              no_of_children: 1
+              links: {
+                self: "/hierarchies/{instance_ID/Special_Aggregat/01",
+                code: "code-lists/{code-list-id}/codes/01"
+              }
   HierarchyLinks:
     description: "A list of links related to this hierarchy"
     readOnly: true
@@ -148,6 +163,25 @@ definitions:
           type: object
           items:
             $ref: '#/definitions/CodeChild'
+          example:
+            - label: "Audio Equipment"
+              code: "09.1"
+              no_of_children: 3
+              has_data: true
+              links: {
+                self: "/hierarchies/i1234/CPIAggregate/09.1",
+                Parent: "/hierarchies/i1234/CPIAggregate/09",
+                code: "/code-lists/c345/codes/09.1"
+              }
+            - label: "Car Equipment"
+              code: "09.2"
+              no_of_children: 2
+              has_data: true
+              links: {
+                self: "/hierarchies/i1234/CPIAggregate/09.2",
+                Parent: "/hierarchies/i1234/CPIAggregate/09",
+                code: "/code-lists/c345/codes/09.2"
+              }
   CodeLinks:
     description: "A list of links related to this code"
     readOnly: true
