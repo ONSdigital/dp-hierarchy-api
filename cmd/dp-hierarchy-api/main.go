@@ -1,162 +1,100 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"errors"
-	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
+	"github.com/ONSdigital/dp-hierarchy-api/api"
 	"github.com/ONSdigital/dp-hierarchy-api/config"
-	"github.com/ONSdigital/dp-hierarchy-api/response"
-	"github.com/ONSdigital/dp-hierarchy-api/stubs"
-	"github.com/ONSdigital/dp-hierarchy-api/validate"
+	"github.com/ONSdigital/dp-hierarchy-api/models"
+	"github.com/ONSdigital/dp-hierarchy-api/store"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
 	"github.com/gorilla/mux"
 )
 
-var hierarchy map[string]*stubs.Output
-
 func main() {
 	log.Namespace = "dp-hierarchy-api"
+
 	config, err := config.Get()
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
 
-	hierarchy = stubs.GenerateHierarchy()
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 
-	router := mux.NewRouter()
-	//router.Path("/hierarchies").HandlerFunc(codeListsHandler)
-	router.Path("/hierarchies/{id}").HandlerFunc(hierarchiesHandler)
-	router.Path("/hierarchies/{id}/{level1}").HandlerFunc(level1Handler)
-	router.Path("/hierarchies/{id}/{level1}/{level2}").HandlerFunc(level2Handler)
-
-	log.Debug("starting http server", log.Data{"bind_addr": config.BindAddr})
-	srv := server.New(config.BindAddr, router)
-	if err := srv.ListenAndServe(); err != nil {
+	// setup database
+	dbStore, err := store.New(config.DbAddr)
+	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-}
+	log.Debug("connected to db", nil)
+	api.SetDatabase(dbStore)
 
-func hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
-	id := mux.Vars(req)["id"]
-	if id != "CPI" {
-		log.DebugR(req, "hierarchy not found", log.Data{"id": id})
-		w.WriteHeader(http.StatusNotFound)
-		return
+	// setup http server
+	router := mux.NewRouter()
+	srv := server.New(config.BindAddr, router)
+	srv.HandleOSSignals = false
+	api.AddRoutes(router)
+	api.HierarchyAPIURL = config.HierarchyAPIURL
+
+	// put constants into model
+	models.CodelistURL = config.CodelistAPIURL
+
+	// start http server
+	httpServerDoneChan := make(chan error)
+	go func() {
+		log.Debug("starting http server", log.Data{"bind_addr": config.BindAddr})
+		if err := srv.ListenAndServe(); err != nil {
+			log.Error(err, nil)
+		}
+		close(httpServerDoneChan)
+	}()
+
+	// wait (indefinitely) for an exit event (either an OS signal or the httpServerDoneChan)
+	// set `err` and logData
+	wantHTTPShutdown := true
+	logData := log.Data{}
+	select {
+	case sig := <-signals:
+		err = errors.New("aborting after signal")
+		logData["signal"] = sig.String()
+	case err = <-httpServerDoneChan:
+		wantHTTPShutdown = false
 	}
 
-	res := &response.Response{
-		ID:        hierarchy[id].ID,
-		LabelCode: hierarchy[id].LabelCode,
-		Label:     hierarchy[id].Label,
-	}
+	// gracefully shutdown the application, closing any open resources
+	logData["timeout"] = config.ShutdownTimeout
+	log.ErrorC("Start shutdown", err, logData)
+	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 
-	res.AddChildren(hierarchy[id].Children)
-	res.AddLinks(req.URL.String())
+	go func() {
+		if wantHTTPShutdown {
+			if err := srv.Shutdown(shutdownContext); err != nil {
+				log.ErrorC("error closing http server", err, nil)
+			} else {
+				log.Trace("http server shutdown", nil)
+			}
+		}
 
-	b, err := json.Marshal(res)
-	if err != nil {
-		log.ErrorR(req, err, nil)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+		if err := dbStore.Close(shutdownContext); err != nil {
+			log.ErrorC("error closing db connection", err, nil)
+		} else {
+			log.Trace("db connection shutdown", nil)
+		}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
-}
+		shutdownContextCancel()
+	}()
 
-func level1Handler(w http.ResponseWriter, req *http.Request) {
-	id := mux.Vars(req)["id"]
-	level1 := mux.Vars(req)["level1"]
-	if id != "CPI" {
-		log.DebugR(req, "hierarchy not found", log.Data{"id": id})
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
+	// wait for timeout or success (cancel)
+	<-shutdownContext.Done()
 
-	v := &validate.Request{
-		R:  req,
-		W:  w,
-		ID: id,
-	}
-
-	if ok := v.Validate(level1); !ok {
-		return
-	}
-
-	item := hierarchy[level1]
-	res := &response.Response{
-		ID:        item.ID,
-		LabelCode: item.LabelCode,
-		Label:     item.Label,
-	}
-
-	res.AddChildren(item.Children)
-	if data := res.AddParent(item.Parents, level1); data != nil {
-		log.ErrorR(req, errors.New("too many parent elements found"), *data)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	res.AddLinks(req.URL.String())
-
-	b, err := json.Marshal(res)
-	if err != nil {
-		log.ErrorR(req, err, nil)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
-}
-
-func level2Handler(w http.ResponseWriter, req *http.Request) {
-	id := mux.Vars(req)["id"]
-	level1 := mux.Vars(req)["level1"]
-	level2 := mux.Vars(req)["level2"]
-	label := level1 + "." + level2
-	if id != "CPI" {
-		log.DebugR(req, "hierarchy not found", log.Data{"id": id})
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	v := &validate.Request{
-		R:  req,
-		W:  w,
-		ID: id,
-	}
-
-	if ok := v.Validate(level1, level2); !ok {
-		return
-	}
-
-	item := hierarchy[label]
-	res := &response.Response{
-		ID:        item.ID,
-		LabelCode: item.LabelCode,
-		Label:     item.Label,
-	}
-
-	res.AddChildren(item.Children)
-	if data := res.AddParent(item.Parents, label); data != nil {
-		log.ErrorR(req, errors.New("too many parent elements found"), *data)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	res.AddLinks(req.URL.String())
-
-	b, err := json.Marshal(res)
-	if err != nil {
-		log.ErrorR(req, err, nil)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	log.Info("Shutdown done", log.Data{"context": shutdownContext.Err()})
+	os.Exit(1)
 }
