@@ -1,262 +1,167 @@
-swagger: "2.0"
+swagger: '2.0'
 info:
-  description: "The hierarchy API provides hierarchical models for codelists."
-  version: "1.0.0"
-  title: "Hierarchy API"
+  description: The hierarchy API provides hierarchical views of codelists.
+  version: 1.0.0
+  title: Hierarchy API
   license:
-    name: "Open Government Licence v3.0"
-    url: "http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-basePath: "/v1"
+    name: Open Government Licence v3.0
+    url: 'http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/'
+basePath: /v1
 schemes:
-- "http"
+  - http
 parameters:
   instance_id:
     name: instance_id
     type: string
     required: true
-    description: "The ID of the instance"
+    description: The ID of the instance
     in: path
   dimension_name:
     name: dimension_name
     type: string
     required: true
-    description: "The name of the dimension"
+    description: The name of the dimension
     in: path
   code_id:
     name: code_id
     type: string
     required: true
-    description: "The ID of the code"
+    description: The ID of the code
     in: path
 paths:
-  /hierarchies/{instance_id}/{dimension_name}:
+  '/hierarchies/{instance_id}/{dimension_name}':
     parameters:
       - $ref: '#/parameters/instance_id'
       - $ref: '#/parameters/dimension_name'
     get:
-      summary: "Get the hierarchy for the given dimension name"
-      description: "Get the hierarchy for the given dimension name"
+      summary: Get the root of the hierarchy for the given dimension name
+      description: Get the root of the hierarchy for the given dimension name
       produces:
-      - "application/json"
+        - application/json
       responses:
-        200:
-          description: "The hierarchy was found and returned"
+        '200':
+          description: The hierarchy root was found and returned
           schema:
             $ref: '#/definitions/HierarchyResponse'
-        400:
-          $ref: '#/responses/InstanceNotFound'
-        404:
-          $ref: '#/responses/DimensionNotFound'
-        500:
+        '404':
+          $ref: '#/responses/InstanceOrDimensionNotFound'
+        '500':
           $ref: '#/responses/InternalError'
-  /hierarchies/{instance_id}/{dimension_name}/{code_id}:
+  '/hierarchies/{instance_id}/{dimension_name}/{code_id}':
     parameters:
       - $ref: '#/parameters/instance_id'
       - $ref: '#/parameters/dimension_name'
       - $ref: '#/parameters/code_id'
     get:
-      summary: "Get a description of a filter job"
-      description: "Get document describing the filter job"
+      summary: Get a specific node in the given hierarchy
+      description: Get the document describing a node in a specific hierarchy
       produces:
-      - "application/json"
+        - application/json
       responses:
-        200:
-          description: "The filter job was found and document is returned"
+        '200':
+          description: The hierarchy node was found and document is returned
           schema:
             $ref: '#/definitions/CodeResponse'
-        400:
-          $ref: '#/responses/InstanceOrDimensionNotFound'
-        404:
-          $ref: '#/responses/CodeNotFound'
-        500:
+        '404':
+          $ref: '#/responses/InstanceOrDimensionOrCodeNotFound'
+        '500':
           $ref: '#/responses/InternalError'
 responses:
-  InstanceNotFound:
-    description: "Instance not found"
-  DimensionNotFound:
-    description: "Dimension not found"
   InstanceOrDimensionNotFound:
-    description: "Instance or dimension name not found"
-  CodeNotFound:
-    description: "Code not found"
+    description: Instance or dimension name not found
+  InstanceOrDimensionOrCodeNotFound:
+    description: 'Instance, dimension or code not found'
   InternalError:
-    description: "Failed to process the request due to an internal error"
+    description: Failed to process the request due to an internal error
 definitions:
-  HierarchyResponse:
-    description: ""
+  Label:
+    description: A label for this node
+    type: string
+  Link:
+    description: A link to a given resource
+    readOnly: true
     type: object
     properties:
+      id:
+        type: string
+      href:
+        type: string
+  HierarchyResponse:
+    description: The top-level node of a hierarchy
+    type: object
+    properties:
+      label:
+        $ref: '#/definitions/Label'
       links:
-        $ref: '#/definitions/HierarchyLinks'
+        $ref: '#/definitions/Links'
       children:
         type: array
-        description: "The top level nodes of this hierarchy"
+        description: The children of the top-level node of this hierarchy
         items:
-          type: object
-          items:
-              $ref: '#/definitions/HierarchyChild'
-          example:
-            - label: "Transport"
-              code: "01"
-              no_of_children: 3
-              links: {
-                self: "/hierarchies/{instance_ID/Special_Aggregat/01",
-                code: "code-lists/{code-list-id}/codes/01"
-              }
-            - label: "Grains"
-              code: "02"
-              no_of_children: 1
-              links: {
-                self: "/hierarchies/{instance_ID/Special_Aggregat/01",
-                code: "code-lists/{code-list-id}/codes/01"
-              }
-  HierarchyLinks:
-    description: "A list of links related to this hierarchy"
+          $ref: '#/definitions/NodeRef'
+  Links:
+    description: A list of links related to this node
     readOnly: true
     type: object
     properties:
       self:
-        $ref: '#/definitions/SelfLink'
-      dimension:
-        $ref: '#/definitions/DimensionLink'
-  HierarchyChild:
-    type: object
-    readOnly: true
-    properties:
-      links:
-        $ref: '#/definitions/HierarchyChildLinks'
-      label:
-        type: string
-        description: "The label for this child node"
-      code:
-        type: string
-        description: "The code for this child node"
-      no_of_children:
-        type: integer
-        description: "The number of child nodes that this node has"
-  HierarchyChildLinks:
-    description: "A list of links related to this node"
-    readOnly: true
-    type: object
-    properties:
+        $ref: '#/definitions/Link'
+      codelist:
+        $ref: '#/definitions/Link'
+    example:
       self:
-        $ref: '#/definitions/SelfLink'
+        id: abc123
+        href: 'http://hierarchy-api/hierarchies/instance_id1/dimension1'
+      codelist:
+        id: xyz987
+        href: 'http://codelist/code-lists/clist1/codes/xyz987'
   CodeResponse:
-    description: ""
+    description: ''
     type: object
     properties:
       links:
-        $ref: '#/definitions/CodeLinks'
+        $ref: '#/definitions/Links'
       label:
         type: string
-        description: "The label for this node"
-      code:
-        type: string
-        description: "The code for this node"
+        description: The label for this node
       has_data:
         type: boolean
-        description: "True if the instance has an observation for this code"
+        description: True if the instance has an observation for this code
       children:
         type: array
-        description: "The child nodes of this node in the hierarchy"
+        description: The child nodes of this node in the hierarchy
         items:
-          type: object
-          items:
-            $ref: '#/definitions/CodeChild'
-          example:
-            - label: "Audio Equipment"
-              code: "09.1"
-              no_of_children: 3
-              has_data: true
-              links: {
-                self: "/hierarchies/i1234/CPIAggregate/09.1",
-                Parent: "/hierarchies/i1234/CPIAggregate/09",
-                code: "/code-lists/c345/codes/09.1"
-              }
-            - label: "Car Equipment"
-              code: "09.2"
-              no_of_children: 2
-              has_data: true
-              links: {
-                self: "/hierarchies/i1234/CPIAggregate/09.2",
-                Parent: "/hierarchies/i1234/CPIAggregate/09",
-                code: "/code-lists/c345/codes/09.2"
-              }
-  CodeLinks:
-    description: "A list of links related to this code"
-    readOnly: true
-    type: object
-    properties:
-      self:
-        $ref: '#/definitions/SelfLink'
-      code:
-        $ref: '#/definitions/CodeLink'
-      dimension_option:
-        $ref: '#/definitions/DimensionOptionLink'
-      parent:
-        $ref: '#/definitions/ParentLink'
-  CodeChild:
+          $ref: '#/definitions/NodeRef'
+      breadcrumbs:
+        type: array
+        description: >-
+          The ancestors (nodes) of this node in the hierarchy, starting with the
+          parent
+        items:
+          $ref: '#/definitions/NodeRef'
+  NodeRef:
     type: object
     readOnly: true
     properties:
       links:
-        $ref: '#/definitions/CodeChildLinks'
+        $ref: '#/definitions/Links'
       label:
         type: string
-        description: "The label for this child node"
-      code:
-        type: string
-        description: "The code for this child node"
+        description: The label for this child node
       no_of_children:
         type: integer
-        description: "The number of child nodes that this node has"
-  CodeChildLinks:
-    description: "A list of links related to this node"
-    readOnly: true
-    type: object
-    properties:
-      self:
-        $ref: '#/definitions/SelfLink'
-      parent:
-        $ref: '#/definitions/ParentLink'
-      code:
-        $ref: '#/definitions/CodeLink'
-  SelfLink:
-    description: "A link to this resource"
-    readOnly: true
-    type: object
-    properties:
-      href:
-        type: string
-  DimensionLink:
-    type: object
-    readOnly: true
-    properties:
-      href:
-        description: "A link to the dimension"
-        example: "http://localhost:8080/dataset/CPI/edition/2017/v/3/dimensions/CPIAggregate"
-        type: string
-  DimensionOptionLink:
-    type: object
-    readOnly: true
-    properties:
-      href:
-        description: "A link to the dimension option"
-        example: "http://localhost:8080/dataset/CPI/edition/2017/v/3/dimensions/CPIAggregate/option/09"
-        type: string
-  ParentLink:
-    type: object
-    readOnly: true
-    properties:
-      href:
-        description: "A link to the parent node of this node"
-        example: "http://localhost:8080/hierarchies/i1234/CPIAggregate/09"
-        type: string
-  CodeLink:
-    type: object
-    readOnly: true
-    properties:
-      href:
-        description: "A link to the code related to this node"
-        example: "http://localhost:8080/code-lists/c345/codes/09.1"
-        type: string
+        description: The number of child nodes that this node has
+      has_data:
+        type: boolean
+        description: True if the instance has an observation for this code
+    example:
+      label: Transport
+      no_of_children: 3
+      has_data: 'yes'
+      links:
+        self:
+          id: '123'
+          href: 'http://hierarchy-api/hierarchies/{instance_id}/Special_Aggregat/123'
+        codelist:
+          id: 987
+          href: 'http://codelist-api/code-lists/{code-list-id}/codes/01'
