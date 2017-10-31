@@ -24,7 +24,7 @@ func Get() (*Config, error) {
 			BindAddr:        ":22600",
 			HierarchyAPIURL: "http://localhost:22600",
 			DbAddr:          "bolt://localhost:7687",
-			ShutdownTimeout: time.Duration(5 * time.Second),
+			ShutdownTimeout: 5 * time.Second,
 			CodelistAPIURL:  "http://localhost:22400",
 		}
 		if err := envconfig.Process("", configuration); err != nil {

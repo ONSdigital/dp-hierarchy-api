@@ -10,23 +10,25 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var (
-	database        store.Storer
-	hierarchyRoute  *mux.Route
-	HierarchyAPIURL string
-)
+var database store.Storer
+var hierarchyRoute *mux.Route
 
+// HierarchyAPIURL must be set by main() to give this package access to it
+var HierarchyAPIURL string
+
+// SetDatabase sets the Storer interface for this package
 func SetDatabase(db store.Storer) {
 	database = db
 }
 
+// AddRoutes is called by main to add the routers served by this API
 func AddRoutes(r *mux.Router) {
-	r.Path("/hierarchies/{instance}/{dimension}").HandlerFunc(HierarchiesHandler).Name("hierarchy_url")
-	r.Path("/hierarchies/{instance}/{dimension}/{code}").HandlerFunc(CodesHandler)
+	r.Path("/hierarchies/{instance}/{dimension}").HandlerFunc(hierarchiesHandler).Name("hierarchy_url")
+	r.Path("/hierarchies/{instance}/{dimension}/{code}").HandlerFunc(codesHandler)
 	hierarchyRoute = r.Get("hierarchy_url")
 }
 
-func HierarchiesHandler(w http.ResponseWriter, req *http.Request) {
+func hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	instance := mux.Vars(req)["instance"]
 	dimension := mux.Vars(req)["dimension"]
 	logData := log.Data{"instance_id": instance, "dimension": dimension}
@@ -64,7 +66,7 @@ func HierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	w.Write(b)
 }
 
-func CodesHandler(w http.ResponseWriter, req *http.Request) {
+func codesHandler(w http.ResponseWriter, req *http.Request) {
 	instance := mux.Vars(req)["instance"]
 	dimension := mux.Vars(req)["dimension"]
 	code := mux.Vars(req)["code"]

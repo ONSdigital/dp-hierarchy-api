@@ -4,6 +4,7 @@ import "fmt"
 
 const codelistFormat = "%s/code-list/%s/code"
 
+// CodelistURL set by main() to make accessible to all models users
 var CodelistURL string
 
 // Response models a node in the hierarchy
@@ -26,6 +27,7 @@ type Element struct {
 	HasData      bool            `json:"has_data"`
 }
 
+// Link is a combination of ID and HRef for the object in question
 type Link struct {
 	ID   string `json:"id,omitempty"`
 	HRef string `json:"href,omitempty"`
@@ -60,7 +62,6 @@ func (r *Element) AddLinks(hierarchy *Hierarchy) {
 func GetLink(baseURL string, linkId, id string) *Link {
 	if linkId == "" {
 		return &Link{HRef: baseURL, ID: id}
-	} else {
-		return &Link{HRef: baseURL + "/" + linkId, ID: id}
 	}
+	return &Link{HRef: baseURL + "/" + linkId, ID: id}
 }
