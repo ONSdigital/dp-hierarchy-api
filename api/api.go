@@ -5,19 +5,18 @@ import (
 	"net/http"
 
 	"github.com/ONSdigital/dp-hierarchy-api/models"
-	"github.com/ONSdigital/dp-hierarchy-api/store"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/gorilla/mux"
 )
 
-var database store.Storer
+var database models.Storer
 var hierarchyRoute *mux.Route
 
 // HierarchyAPIURL must be set by main() to give this package access to it
 var HierarchyAPIURL string
 
 // SetDatabase sets the Storer interface for this package
-func SetDatabase(db store.Storer) {
+func SetDatabase(db models.Storer) {
 	database = db
 }
 

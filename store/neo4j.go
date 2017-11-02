@@ -27,16 +27,8 @@ type Store struct {
 
 type neoArgMap map[string]interface{}
 
-// Storer is the generic interface for the database
-type Storer interface {
-	Close(ctx context.Context) error
-	GetCodelist(hierarchy *models.Hierarchy) (string, error)
-	GetHierarchy(hierarchy *models.Hierarchy) (*models.Response, error)
-	GetCode(hierarchy *models.Hierarchy, code string) (*models.Response, error)
-}
-
 // New creates a new Storer object
-func New(dbURL string) (Storer, error) {
+func New(dbURL string) (models.Storer, error) {
 	pool, err := bolt.NewClosableDriverPool(dbURL, 5)
 	if err != nil {
 		log.Error(err, nil)
