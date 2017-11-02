@@ -79,8 +79,8 @@ func TestSanity(t *testing.T) {
 		So(w.Code, ShouldEqual, http.StatusOK)
 		So(w.Body.String(), ShouldEqual,
 			`{"label":"h-lay-bull",`+
-				`"children":[{"label":"h-child1","no_of_children":2,"links":{"codelist":{"href":"`+codelistURL+`/code-list/clistABC/code"},"self":{"href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34"}},"has_data":false}],`+
-				`"links":{"codelist":{"id":"h-eye-dee","href":"`+codelistURL+`/code-list/clistABC/code/h-eye-dee"},"self":{"id":"h-eye-dee","href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34"}}`+
+				`"children":[{"label":"h-child1","no_of_children":2,"links":{"code":{"href":"`+codelistURL+`/code-list/clistABC/code"},"self":{"href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34"}},"has_data":false}],`+
+				`"links":{"code":{"id":"h-eye-dee","href":"`+codelistURL+`/code-list/clistABC/code/h-eye-dee"},"self":{"id":"h-eye-dee","href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34"}}`+
 				`}`,
 		)
 	})
@@ -92,7 +92,7 @@ func TestSanity(t *testing.T) {
 		So(w.Code, ShouldEqual, http.StatusOK)
 		So(w.Body.String(), ShouldEqual,
 			`{"label":"lay-bull",`+
-				`"links":{"codelist":{"id":"codeN","href":"`+codelistURL+`/code-list/clistABC/code/codeN"},"self":{"id":"codeN","href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34/codeN"}},`+
+				`"links":{"code":{"id":"codeN","href":"`+codelistURL+`/code-list/clistABC/code/codeN"},"self":{"id":"codeN","href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34/codeN"}},`+
 				`"breadcrumbs":[{"label":"child1","no_of_children":1,"has_data":false}]`+
 				`}`,
 		)

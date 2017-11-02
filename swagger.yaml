@@ -106,13 +106,13 @@ definitions:
     properties:
       self:
         $ref: '#/definitions/Link'
-      codelist:
+      code:
         $ref: '#/definitions/Link'
     example:
       self:
         id: abc123
         href: 'http://hierarchy-api/hierarchies/instance_id1/dimension1'
-      codelist:
+      code:
         id: xyz987
         href: 'http://codelist/code-lists/clist1/codes/xyz987'
   CodeResponse:
@@ -162,6 +162,6 @@ definitions:
         self:
           id: '123'
           href: 'http://hierarchy-api/hierarchies/{instance_id}/Special_Aggregat/123'
-        codelist:
+        code:
           id: 987
           href: 'http://codelist-api/code-lists/{code-list-id}/codes/01'

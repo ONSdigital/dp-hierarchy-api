@@ -43,7 +43,7 @@ func (r *Response) AddLinks(hierarchy *Hierarchy, isRoot bool) {
 	} else {
 		r.Links["self"] = *GetLink(hierarchy.URL, r.ID, r.ID)
 	}
-	r.Links["codelist"] = *GetLink(fmt.Sprintf(codelistFormat, CodelistURL, hierarchy.CodelistId), r.ID, r.ID)
+	r.Links["code"] = *GetLink(fmt.Sprintf(codelistFormat, CodelistURL, hierarchy.CodelistId), r.ID, r.ID)
 	for _, child := range r.Children {
 		child.AddLinks(hierarchy)
 	}
@@ -55,7 +55,7 @@ func (r *Element) AddLinks(hierarchy *Hierarchy) {
 		r.Links = make(map[string]Link)
 	}
 	r.Links["self"] = *GetLink(hierarchy.URL, r.ID, r.ID)
-	r.Links["codelist"] = *GetLink(fmt.Sprintf(codelistFormat, CodelistURL, hierarchy.CodelistId), r.ID, r.ID)
+	r.Links["code"] = *GetLink(fmt.Sprintf(codelistFormat, CodelistURL, hierarchy.CodelistId), r.ID, r.ID)
 }
 
 // GetLink returns a Link{id,href} object for the given url/id (or just url if id is empty)
