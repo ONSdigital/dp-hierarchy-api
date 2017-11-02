@@ -9,6 +9,7 @@ import (
 
 	"github.com/ONSdigital/dp-hierarchy-api/api"
 	"github.com/ONSdigital/dp-hierarchy-api/config"
+	"github.com/ONSdigital/dp-hierarchy-api/health"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/dp-hierarchy-api/store"
 	"github.com/ONSdigital/go-ns/log"
@@ -42,10 +43,16 @@ func main() {
 	srv := server.New(config.BindAddr, router)
 	srv.HandleOSSignals = false
 	api.AddRoutes(router)
+
+	// put config into api
 	api.HierarchyAPIURL = config.HierarchyAPIURL
 
 	// put constants into model
 	models.CodelistURL = config.CodelistAPIURL
+
+	// setup healthcheck
+	health.SetDatabase(dbStore)
+	health.AddRoutes(router)
 
 	// start http server
 	httpServerDoneChan := make(chan error)

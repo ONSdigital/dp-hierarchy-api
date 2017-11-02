@@ -8,4 +8,5 @@ type Storer interface {
 	GetCodelist(hierarchy *Hierarchy) (string, error)
 	GetHierarchy(hierarchy *Hierarchy) (*Response, error)
 	GetCode(hierarchy *Hierarchy, code string) (*Response, error)
+	Ping(ctx context.Context) error
 }

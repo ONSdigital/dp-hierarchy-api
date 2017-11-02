@@ -59,6 +59,9 @@ func (db fakedb) GetHierarchy(h *models.Hierarchy) (*models.Response, error) {
 	}
 	return res, nil
 }
+func (db fakedb) Ping(ctx context.Context) error {
+	return nil
+}
 
 func TestSanity(t *testing.T) {
 	t.Parallel()

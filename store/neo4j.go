@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/go-ns/log"
@@ -13,6 +14,7 @@ import (
 )
 
 const (
+	pingStmt        = "MATCH (i) RETURN i LIMIT 1"
 	existStmt       = "MATCH (i:`_hierarchy_node_%s_%s`) RETURN i LIMIT 1"
 	getHierStmt     = "MATCH (i:`_hierarchy_node_%s_%s`) WHERE NOT (i)-[:hasParent]->() RETURN i LIMIT 1" // TODO check if this LIMIT is valid
 	getCodeStmt     = "MATCH (i:`_hierarchy_node_%s_%s` {code:{code}}) RETURN i"
@@ -22,7 +24,8 @@ const (
 
 // Store contains DB details
 type Store struct {
-	dbPool bolt.ClosableDriverPool
+	dbPool   bolt.ClosableDriverPool
+	lastPing time.Time
 }
 
 type neoArgMap map[string]interface{}
@@ -34,11 +37,11 @@ func New(dbURL string) (models.Storer, error) {
 		log.Error(err, nil)
 		return nil, err
 	}
-	return &Store{dbPool: pool}, nil
+	return &Store{dbPool: pool, lastPing: time.Now()}, nil
 }
 
 // Close allows main to close the database connections with context
-func (s Store) Close(ctx context.Context) error {
+func (s *Store) Close(ctx context.Context) error {
 	errChan := make(chan error)
 	go func() {
 		errChan <- s.dbPool.Close()
@@ -52,44 +55,81 @@ func (s Store) Close(ctx context.Context) error {
 	}
 }
 
-// GetCodelist obtains the codelist id for this hierarchy (also, check that it exists)
-func (s Store) GetCodelist(hierarchy *models.Hierarchy) (string, error) {
-	neoStmt := fmt.Sprintf(existStmt, hierarchy.InstanceId, hierarchy.Dimension)
-	logData := log.Data{"statement": neoStmt}
+func (s *Store) Ping(ctx context.Context) error {
+	if time.Since(s.lastPing) < 1*time.Second {
+		return nil
+	}
 
-	log.Trace("executing exists query", logData)
-	conn, err := s.dbPool.OpenPool()
+	s.lastPing = time.Now()
+	pingDoneChan := make(chan error)
+	go func() {
+		log.Trace("db ping", nil)
+		if _, err := s.getProps(pingStmt); err != nil {
+			log.ErrorC("Ping getAll", err, nil)
+			pingDoneChan <- err
+			return
+		}
+		close(pingDoneChan)
+	}()
+	select {
+	case err := <-pingDoneChan:
+		return err
+	case <-ctx.Done():
+		close(pingDoneChan)
+		return ctx.Err()
+	}
+}
+
+// GetCodelist obtains the codelist id for this hierarchy (also, check that it exists)
+func (s *Store) GetCodelist(hierarchy *models.Hierarchy) (string, error) {
+	neoStmt := fmt.Sprintf(existStmt, hierarchy.InstanceId, hierarchy.Dimension)
+	props, err := s.getProps(neoStmt)
 	if err != nil {
+		log.ErrorC("GetCodelist getProps", err, nil)
 		return "", err
 	}
+	if props == nil {
+		// no results
+		return "", nil
+	}
+	return props["code_list"].(string), nil
+}
+
+func (s *Store) getProps(neoStmt string) (res map[string]interface{}, err error) {
+	logData := log.Data{"statement": neoStmt}
+	conn, err := s.dbPool.OpenPool()
+	if err != nil {
+		log.ErrorC("getProps OpenPool", err, logData)
+		return nil, err
+	}
 	defer conn.Close()
+
 	rows, err := conn.QueryNeo(neoStmt, nil)
 	if err != nil {
-		log.ErrorC("GetCodelist query", err, logData)
-		return "", err
+		log.ErrorC("getProps query", err, logData)
+		return nil, err
 	}
 	defer rows.Close()
 
 	data, _, err := rows.All()
 	if err != nil {
-		log.ErrorC("GetCodelist rows", err, logData)
-		return "", err
+		log.ErrorC("getProps rows.All", err, logData)
+		return nil, err
 	}
 	if len(data) == 0 {
-		return "", nil
+		return nil, nil
 	}
-	props := data[0][0].(graph.Node).Properties
-	return props["code_list"].(string), nil
+	return data[0][0].(graph.Node).Properties, nil
 }
 
 // GetHierarchy returns the upper-most node for a given hierarchy
-func (s Store) GetHierarchy(hierarchy *models.Hierarchy) (*models.Response, error) {
+func (s *Store) GetHierarchy(hierarchy *models.Hierarchy) (*models.Response, error) {
 	neoStmt := fmt.Sprintf(getHierStmt, hierarchy.InstanceId, hierarchy.Dimension)
 	return s.queryResponse(hierarchy, neoStmt, neoArgMap{})
 }
 
 // GetCode gets a node in a given hierarchy for a given code
-func (s Store) GetCode(hierarchy *models.Hierarchy, code string) (res *models.Response, err error) {
+func (s *Store) GetCode(hierarchy *models.Hierarchy, code string) (res *models.Response, err error) {
 	// res = &models.Response{}
 	neoStmt := fmt.Sprintf(getCodeStmt, hierarchy.InstanceId, hierarchy.Dimension)
 	if res, err = s.queryResponse(hierarchy, neoStmt, neoArgMap{"code": code}); err != nil {
@@ -100,7 +140,7 @@ func (s Store) GetCode(hierarchy *models.Hierarchy, code string) (res *models.Re
 }
 
 // QueryResponse performs DB query (neoStmt, neoArgs) returning Response (should be singular)
-func (s Store) queryResponse(hierarchy *models.Hierarchy, neoStmt string, neoArgs neoArgMap) (res *models.Response, err error) {
+func (s *Store) queryResponse(hierarchy *models.Hierarchy, neoStmt string, neoArgs neoArgMap) (res *models.Response, err error) {
 	logData := log.Data{"statement": neoStmt, "row_count": 0, "neo_args": neoArgs}
 
 	log.Trace("QueryResponse executing get query", logData)
@@ -147,13 +187,13 @@ func (s Store) queryResponse(hierarchy *models.Hierarchy, neoStmt string, neoArg
 	return
 }
 
-func (s Store) getChildren(hierarchy *models.Hierarchy, code string) ([]*models.Element, error) {
+func (s *Store) getChildren(hierarchy *models.Hierarchy, code string) ([]*models.Element, error) {
 	neoStmt := fmt.Sprintf(getChildrenStmt, hierarchy.InstanceId, hierarchy.Dimension)
 	return s.queryElements(neoStmt, neoArgMap{"code": code}, hierarchy)
 }
 
 // GetAncestry retrieves a list of ancestors for this code - as breadcrumbs (ordered, nearest first)
-func (s Store) getAncestry(hierarchy *models.Hierarchy, code string) (ancestors []*models.Element, err error) {
+func (s *Store) getAncestry(hierarchy *models.Hierarchy, code string) (ancestors []*models.Element, err error) {
 	logData := log.Data{"instance_id": hierarchy.InstanceId, "dimension": hierarchy.Dimension, "code": code}
 	neoStmt := fmt.Sprintf(getAncestryStmt, hierarchy.InstanceId, hierarchy.Dimension)
 	if ancestors, err = s.queryElements(neoStmt, neoArgMap{"code": code}, hierarchy); err != nil {
@@ -166,7 +206,7 @@ func (s Store) getAncestry(hierarchy *models.Hierarchy, code string) (ancestors 
 }
 
 // queryElements returns a list of models.Elements from the database
-func (s Store) queryElements(neoStmt string, neoArgs neoArgMap, hierarchy *models.Hierarchy) ([]*models.Element, error) {
+func (s *Store) queryElements(neoStmt string, neoArgs neoArgMap, hierarchy *models.Hierarchy) ([]*models.Element, error) {
 	logData := log.Data{"db_statement": neoStmt, "row_count": 0, "db_args": neoArgs}
 	log.Trace("QueryElements: executing get query", logData)
 	conn, err := s.dbPool.OpenPool()
