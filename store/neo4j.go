@@ -18,7 +18,7 @@ const (
 	existStmt       = "MATCH (i:`_hierarchy_node_%s_%s`) RETURN i LIMIT 1"
 	getHierStmt     = "MATCH (i:`_hierarchy_node_%s_%s`) WHERE NOT (i)-[:hasParent]->() RETURN i LIMIT 1" // TODO check if this LIMIT is valid
 	getCodeStmt     = "MATCH (i:`_hierarchy_node_%s_%s` {code:{code}}) RETURN i"
-	getChildrenStmt = "MATCH (i:`_hierarchy_node_%s_%s` {code:{code}})<-[r:hasParent]-(child) RETURN child"
+	getChildrenStmt = "MATCH (i:`_hierarchy_node_%s_%s` {code:{code}})<-[r:hasParent]-(child) RETURN child ORDER BY child.label"
 	getAncestryStmt = "MATCH (i:`_hierarchy_node_%s_%s` {code:{code}})-[r:hasParent *]->(parent) RETURN parent"
 )
 
