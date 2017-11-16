@@ -29,8 +29,10 @@ func (db fakedb) GetCode(h *models.Hierarchy, code string) (*models.Response, er
 	res := &models.Response{
 		Label: "lay-bull",
 		ID:    code,
+		NoOfChildren: 1,
+		HasData:      true,
 		Breadcrumbs: []*models.Element{
-			&models.Element{
+			{
 				Label:        "child1",
 				NoOfChildren: 1,
 			},
@@ -48,10 +50,12 @@ func (db fakedb) GetCodelist(h *models.Hierarchy) (string, error) {
 }
 func (db fakedb) GetHierarchy(h *models.Hierarchy) (*models.Response, error) {
 	res := &models.Response{
-		Label: "h-lay-bull",
-		ID:    "h-eye-dee",
+		Label:        "h-lay-bull",
+		ID:           "h-eye-dee",
+		NoOfChildren: 1,
+		HasData:      true,
 		Children: []*models.Element{
-			&models.Element{
+			{
 				Label:        "h-child1",
 				NoOfChildren: 2,
 			},
@@ -79,8 +83,8 @@ func TestSanity(t *testing.T) {
 		So(w.Code, ShouldEqual, http.StatusOK)
 		So(w.Body.String(), ShouldEqual,
 			`{"label":"h-lay-bull",`+
-				`"children":[{"label":"h-child1","no_of_children":2,"links":{"code":{"href":"`+codelistURL+`/code-list/clistABC/code"},"self":{"href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34"}},"has_data":false}],`+
-				`"links":{"code":{"id":"h-eye-dee","href":"`+codelistURL+`/code-list/clistABC/code/h-eye-dee"},"self":{"id":"h-eye-dee","href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34"}}`+
+				`"children":[{"label":"h-child1","no_of_children":2,"links":{"code":{"href":"`+ codelistURL+ `/code-list/clistABC/code"},"self":{"href":"`+ hierarchyAPIURL+ `/hierarchies/hier12/dim34"}},"has_data":false}],"no_of_children":1,` +
+				`"links":{"code":{"id":"h-eye-dee","href":"`+ codelistURL+ `/code-list/clistABC/code/h-eye-dee"},"self":{"id":"h-eye-dee","href":"`+ hierarchyAPIURL+ `/hierarchies/hier12/dim34"}},"has_data":true`+
 				`}`,
 		)
 	})
@@ -91,8 +95,8 @@ func TestSanity(t *testing.T) {
 		router.ServeHTTP(w, r)
 		So(w.Code, ShouldEqual, http.StatusOK)
 		So(w.Body.String(), ShouldEqual,
-			`{"label":"lay-bull",`+
-				`"links":{"code":{"id":"codeN","href":"`+codelistURL+`/code-list/clistABC/code/codeN"},"self":{"id":"codeN","href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34/codeN"}},`+
+			`{"label":"lay-bull","no_of_children":1,`+
+				`"links":{"code":{"id":"codeN","href":"`+ codelistURL+ `/code-list/clistABC/code/codeN"},"self":{"id":"codeN","href":"`+ hierarchyAPIURL+ `/hierarchies/hier12/dim34/codeN"}},"has_data":true,`+
 				`"breadcrumbs":[{"label":"child1","no_of_children":1,"has_data":false}]`+
 				`}`,
 		)
