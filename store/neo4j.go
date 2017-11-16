@@ -172,6 +172,7 @@ func (s *Store) queryResponse(hierarchy *models.Hierarchy, neoStmt string, neoAr
 		res.ID = props["code"].(string)
 		res.Label = props["label"].(string)
 		res.HasData = props["hasData"].(bool)
+		res.NoOfChildren = props["numberOfChildren"].(int64)
 		delete(logData, "row")
 		delete(logData, "meta")
 	}

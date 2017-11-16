@@ -12,8 +12,9 @@ type Response struct {
 	ID          string          `json:"-"`
 	Label       string          `json:"label"`
 	Children    []*Element      `json:"children,omitempty"`
+	NoOfChildren int64          `json:"no_of_children,omitempty"`
 	Links       map[string]Link `json:"links,omitempty"`
-	HasData     bool            `json:"-"`
+	HasData     bool            `json:"has_data"`
 	Breadcrumbs []*Element      `json:"breadcrumbs,omitempty"`
 	Hierarchy   Hierarchy       `json:"-"`
 }

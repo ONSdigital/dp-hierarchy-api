@@ -94,6 +94,12 @@ definitions:
         $ref: '#/definitions/Label'
       links:
         $ref: '#/definitions/Links'
+      no_of_children:
+        type: integer
+        description: The number of child nodes that this node has
+      has_data:
+        type: boolean
+        description: True if the instance has an observation for this code
       children:
         type: array
         description: The children of the top-level node of this hierarchy
@@ -124,6 +130,9 @@ definitions:
       label:
         type: string
         description: The label for this node
+      no_of_children:
+        type: integer
+        description: The number of child nodes that this node has
       has_data:
         type: boolean
         description: True if the instance has an observation for this code
