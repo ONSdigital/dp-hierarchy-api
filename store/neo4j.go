@@ -9,8 +9,8 @@ import (
 
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/go-ns/log"
-	bolt "github.com/johnnadratowski/golang-neo4j-bolt-driver"
-	"github.com/johnnadratowski/golang-neo4j-bolt-driver/structures/graph"
+	bolt "github.com/ONSdigital/golang-neo4j-bolt-driver"
+	"github.com/ONSdigital/golang-neo4j-bolt-driver/structures/graph"
 )
 
 const (
