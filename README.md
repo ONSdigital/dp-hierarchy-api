@@ -15,6 +15,7 @@ returning children and parents for the requested node.
 | HIERARCHY_DATABASE_ADDRESS  | bolt://localhost:7687                     | The address of the hierarchies database
 | GRACEFUL_SHUTDOWN_TIMEOUT   | 5s                                        | The graceful shutdown timeout (Go `time.Duration` format)
 | CODE_LIST_URL               | http://localhost:22400                    | The external address of the Code List API
+| NEO4J_POOL_SIZE             | 30                                        | The size of the neo4j connection pool
 
 ### Contributing
 
