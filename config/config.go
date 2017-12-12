@@ -13,6 +13,7 @@ type Config struct {
 	DbAddr          string        `envconfig:"HIERARCHY_DATABASE_ADDRESS"`
 	ShutdownTimeout time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	CodelistAPIURL  string        `envconfig:"CODE_LIST_URL"`
+	Neo4jPoolSize   int           `envconfig:"NEO4J_POOL_SIZE"`
 }
 
 var configuration *Config
@@ -26,6 +27,7 @@ func Get() (*Config, error) {
 			DbAddr:          "bolt://localhost:7687",
 			ShutdownTimeout: 5 * time.Second,
 			CodelistAPIURL:  "http://localhost:22400",
+			Neo4jPoolSize:   30,
 		}
 		if err := envconfig.Process("", configuration); err != nil {
 			return nil, err

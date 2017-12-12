@@ -31,8 +31,8 @@ type Store struct {
 type neoArgMap map[string]interface{}
 
 // New creates a new Storer object
-func New(dbURL string) (models.Storer, error) {
-	pool, err := bolt.NewClosableDriverPool(dbURL, 5)
+func New(dbURL string, poolSize int) (models.Storer, error) {
+	pool, err := bolt.NewClosableDriverPool(dbURL, poolSize)
 	if err != nil {
 		log.Error(err, nil)
 		return nil, err

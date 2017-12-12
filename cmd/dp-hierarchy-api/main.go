@@ -30,7 +30,7 @@ func main() {
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 
 	// setup database
-	dbStore, err := store.New(config.DbAddr)
+	dbStore, err := store.New(config.DbAddr, config.Neo4jPoolSize)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
