@@ -2,21 +2,21 @@ package models
 
 import "fmt"
 
-const codelistFormat = "%s/code-list/%s/code"
+const codelistFormat = "%s/code-lists/%s/codes"
 
 // CodelistURL set by main() to make accessible to all models users
 var CodelistURL string
 
 // Response models a node in the hierarchy
 type Response struct {
-	ID          string          `json:"-"`
-	Label       string          `json:"label"`
-	Children    []*Element      `json:"children,omitempty"`
-	NoOfChildren int64          `json:"no_of_children,omitempty"`
-	Links       map[string]Link `json:"links,omitempty"`
-	HasData     bool            `json:"has_data"`
-	Breadcrumbs []*Element      `json:"breadcrumbs,omitempty"`
-	Hierarchy   Hierarchy       `json:"-"`
+	ID           string          `json:"-"`
+	Label        string          `json:"label"`
+	Children     []*Element      `json:"children,omitempty"`
+	NoOfChildren int64           `json:"no_of_children,omitempty"`
+	Links        map[string]Link `json:"links,omitempty"`
+	HasData      bool            `json:"has_data"`
+	Breadcrumbs  []*Element      `json:"breadcrumbs,omitempty"`
+	Hierarchy    Hierarchy       `json:"-"`
 }
 
 // Element is a item in a list within a Response
