@@ -27,8 +27,8 @@ func (db fakedb) Close(ctx context.Context) error {
 }
 func (db fakedb) GetCode(h *models.Hierarchy, code string) (*models.Response, error) {
 	res := &models.Response{
-		Label: "lay-bull",
-		ID:    code,
+		Label:        "lay-bull",
+		ID:           code,
 		NoOfChildren: 1,
 		HasData:      true,
 		Breadcrumbs: []*models.Element{
@@ -83,8 +83,8 @@ func TestSanity(t *testing.T) {
 		So(w.Code, ShouldEqual, http.StatusOK)
 		So(w.Body.String(), ShouldEqual,
 			`{"label":"h-lay-bull",`+
-				`"children":[{"label":"h-child1","no_of_children":2,"links":{"code":{"href":"`+ codelistURL+ `/code-list/clistABC/code"},"self":{"href":"`+ hierarchyAPIURL+ `/hierarchies/hier12/dim34"}},"has_data":false}],"no_of_children":1,` +
-				`"links":{"code":{"id":"h-eye-dee","href":"`+ codelistURL+ `/code-list/clistABC/code/h-eye-dee"},"self":{"id":"h-eye-dee","href":"`+ hierarchyAPIURL+ `/hierarchies/hier12/dim34"}},"has_data":true`+
+				`"children":[{"label":"h-child1","no_of_children":2,"links":{"code":{"href":"`+codelistURL+`/code-lists/clistABC/codes"},"self":{"href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34"}},"has_data":false}],"no_of_children":1,`+
+				`"links":{"code":{"id":"h-eye-dee","href":"`+codelistURL+`/code-lists/clistABC/codes/h-eye-dee"},"self":{"id":"h-eye-dee","href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34"}},"has_data":true`+
 				`}`,
 		)
 	})
@@ -96,7 +96,7 @@ func TestSanity(t *testing.T) {
 		So(w.Code, ShouldEqual, http.StatusOK)
 		So(w.Body.String(), ShouldEqual,
 			`{"label":"lay-bull","no_of_children":1,`+
-				`"links":{"code":{"id":"codeN","href":"`+ codelistURL+ `/code-list/clistABC/code/codeN"},"self":{"id":"codeN","href":"`+ hierarchyAPIURL+ `/hierarchies/hier12/dim34/codeN"}},"has_data":true,`+
+				`"links":{"code":{"id":"codeN","href":"`+codelistURL+`/code-lists/clistABC/codes/codeN"},"self":{"id":"codeN","href":"`+hierarchyAPIURL+`/hierarchies/hier12/dim34/codeN"}},"has_data":true,`+
 				`"breadcrumbs":[{"label":"child1","no_of_children":1,"has_data":false}]`+
 				`}`,
 		)
