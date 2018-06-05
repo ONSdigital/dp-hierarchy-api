@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
-  description: The hierarchy API provides hierarchical views of codelists.
+  description: Provides hierarchical views of certain dimensions with published datasets.
   version: 1.0.0
-  title: Hierarchy API
+  title: Explore hierarchies
   license:
     name: Open Government Licence v3.0
     url: 'http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/'
@@ -34,7 +34,7 @@ paths:
       - $ref: '#/parameters/instance_id'
       - $ref: '#/parameters/dimension_name'
     get:
-      summary: Get the root of the hierarchy for the given dimension name
+      summary: Get the root of a hierarchy
       description: Get the root of the hierarchy for the given dimension name
       produces:
         - application/json
@@ -53,7 +53,7 @@ paths:
       - $ref: '#/parameters/dimension_name'
       - $ref: '#/parameters/code_id'
     get:
-      summary: Get a specific node in the given hierarchy
+      summary: Get a specific node in a hierarchy
       description: Get the document describing a node in a specific hierarchy
       produces:
         - application/json
