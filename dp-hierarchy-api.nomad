@@ -11,6 +11,13 @@ job "dp-hierarchy-api" {
       value     = "web"
     }
 
+    restart {
+      attempts = 3
+      delay    = "15s"
+      interval = "1m"
+      mode     = "delay"
+    }
+
     task "dp-hierarchy-api" {
       driver = "exec"
 
@@ -61,6 +68,13 @@ job "dp-hierarchy-api" {
     constraint {
       attribute = "${node.class}"
       value     = "publishing"
+    }
+
+    restart {
+      attempts = 3
+      delay    = "15s"
+      interval = "1m"
+      mode     = "delay"
     }
 
     task "dp-hierarchy-api" {
