@@ -40,7 +40,7 @@ func (r *Response) AddLinks(hierarchy *Hierarchy, isRoot bool) {
 		r.Links = make(map[string]Link)
 	}
 	if isRoot {
-		r.Links["self"] = *GetLink(hierarchy.URL, "", r.ID)
+		r.Links["self"] = Link{HRef: hierarchy.URL}
 	} else {
 		r.Links["self"] = *GetLink(hierarchy.URL, r.ID, r.ID)
 	}
@@ -55,14 +55,14 @@ func (r *Element) AddLinks(hierarchy *Hierarchy) {
 	if r.Links == nil {
 		r.Links = make(map[string]Link)
 	}
-	r.Links["self"] = *GetLink(hierarchy.URL, r.ID, r.ID)
+	r.Links["self"] = Link{HRef: hierarchy.URL + "/" + r.ID}
 	r.Links["code"] = *GetLink(fmt.Sprintf(codelistFormat, CodelistURL, hierarchy.CodelistId), r.ID, r.ID)
 }
 
 // GetLink returns a Link{id,href} object for the given url/id (or just url if id is empty)
-func GetLink(baseURL string, linkId, id string) *Link {
-	if linkId == "" {
+func GetLink(baseURL string, linkID, id string) *Link {
+	if linkID == "" {
 		return &Link{HRef: baseURL, ID: id}
 	}
-	return &Link{HRef: baseURL + "/" + linkId, ID: id}
+	return &Link{HRef: baseURL + "/" + linkID, ID: id}
 }
