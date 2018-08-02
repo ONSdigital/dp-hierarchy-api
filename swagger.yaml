@@ -90,87 +90,94 @@ definitions:
     description: The top-level node of a hierarchy
     type: object
     properties:
+      children:
+        description: The children of the top-level node of this hierarchy
+        type: array
+        items:
+          $ref: '#/definitions/NodeRef'
+      has_data:
+        description: True if the instance has an observation for this code
+        type: boolean
       label:
         $ref: '#/definitions/Label'
       links:
         $ref: '#/definitions/Links'
       no_of_children:
-        type: integer
         description: The number of child nodes that this node has
-      has_data:
-        type: boolean
-        description: True if the instance has an observation for this code
-      children:
-        type: array
-        description: The children of the top-level node of this hierarchy
-        items:
-          $ref: '#/definitions/NodeRef'
+        type: integer
   Links:
     description: A list of links related to this node
     readOnly: true
     type: object
     properties:
-      self:
-        $ref: '#/definitions/Link'
       code:
         $ref: '#/definitions/Link'
+      self:
+        $ref: '#/definitions/SelfLink'
     example:
-      self:
-        id: abc123
-        href: 'http://hierarchy-api/hierarchies/instance_id1/dimension1'
       code:
-        id: xyz987
         href: 'http://codelist/code-lists/clist1/codes/xyz987'
+        id: xyz987
+      self:
+        href: 'http://hierarchy-api/hierarchies/instance_id1/dimension1'
   CodeResponse:
     description: ''
     type: object
     properties:
-      links:
-        $ref: '#/definitions/Links'
-      label:
-        type: string
-        description: The label for this node
-      no_of_children:
-        type: integer
-        description: The number of child nodes that this node has
-      has_data:
-        type: boolean
-        description: True if the instance has an observation for this code
-      children:
-        type: array
-        description: The child nodes of this node in the hierarchy
-        items:
-          $ref: '#/definitions/NodeRef'
       breadcrumbs:
-        type: array
         description: >-
           The ancestors (nodes) of this node in the hierarchy, starting with the
           parent
+        type: array
         items:
           $ref: '#/definitions/NodeRef'
-  NodeRef:
-    type: object
-    readOnly: true
-    properties:
+      children:
+        description: The child nodes of this node in the hierarchy
+        items:
+          $ref: '#/definitions/NodeRef'
+        type: array
+      has_data:
+        description: True if the instance has an observation for this code
+        type: boolean
+      label:
+        description: The label for this node
+        type: string
       links:
         $ref: '#/definitions/Links'
-      label:
-        type: string
-        description: The label for this child node
       no_of_children:
-        type: integer
         description: The number of child nodes that this node has
+        type: integer
+  NodeRef:
+    description: ""
+    readOnly: true
+    type: object
+    properties:
       has_data:
-        type: boolean
         description: True if the instance has an observation for this code
+        type: boolean
+      label:
+        description: The label for this child node
+        type: string
+      links:
+        $ref: '#/definitions/Links'
+      no_of_children:
+        description: The number of child nodes that this node has
+        type: integer
     example:
-      label: Transport
-      no_of_children: 3
       has_data: 'yes'
+      label: Transport
       links:
         self:
-          id: '123'
           href: 'http://hierarchy-api/hierarchies/{instance_id}/Special_Aggregat/123'
         code:
-          id: 987
           href: 'http://codelist-api/code-lists/{code-list-id}/codes/01'
+          id: 987
+      no_of_children: 3
+  SelfLink:
+    description: A link to the given resource
+    readOnly: true
+    type: object
+    properties:
+      href:
+        description: A url to this resource
+        type: string
