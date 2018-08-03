@@ -103,6 +103,7 @@ func codesHandler(w http.ResponseWriter, req *http.Request) {
 		err = errors.New("incorrect code")
 		log.ErrorR(req, err, logData)
 		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 
 	res.AddLinks(&hierarchy, false)

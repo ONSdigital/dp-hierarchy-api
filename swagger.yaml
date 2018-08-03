@@ -148,7 +148,6 @@ definitions:
         description: The number of child nodes that this node has
         type: integer
   NodeRef:
-    description: ""
     readOnly: true
     type: object
     properties:
