@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/ONSdigital/dp-hierarchy-api/models"
@@ -97,6 +98,14 @@ func codesHandler(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	if res.Label == "" {
+		err = errors.New("incorrect code")
+		log.ErrorR(req, err, logData)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
 	res.AddLinks(&hierarchy, false)
 
 	b, err := json.Marshal(res)
