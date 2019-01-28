@@ -27,11 +27,7 @@ job "dp-hierarchy-api" {
     }
 
     task "dp-hierarchy-api" {
-      driver = "exec"
-
-      artifact {
-        source = "s3::https://s3-eu-west-1.amazonaws.com/{{BUILD_BUCKET}}/dp-hierarchy-api/{{REVISION}}.tar.gz"
-      }
+      driver = "docker"
 
       artifact {
         source = "s3::https://s3-eu-west-1.amazonaws.com/{{DEPLOYMENT_BUCKET}}/dp-hierarchy-api/{{REVISION}}.tar.gz"
@@ -39,9 +35,14 @@ job "dp-hierarchy-api" {
 
       config {
         command = "${NOMAD_TASK_DIR}/start-task"
-        args    = [
-          "${NOMAD_TASK_DIR}/dp-hierarchy-api",
-        ]
+
+        args = [“./dp-hierarchy-api”]
+
+        image = “{{ECR_URL}}:concourse-{{REVISION}}”
+
+        port_map {
+          http = “${NOMAD_PORT_http}”
+        }
       }
 
       service {
