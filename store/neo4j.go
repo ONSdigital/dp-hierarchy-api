@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"time"
 
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/go-ns/log"
@@ -14,7 +13,6 @@ import (
 )
 
 const (
-	pingStmt        = "MATCH (i) RETURN i LIMIT 1"
 	existStmt       = "MATCH (i:`_hierarchy_node_%s_%s`) RETURN i LIMIT 1"
 	getHierStmt     = "MATCH (i:`_hierarchy_node_%s_%s`) WHERE NOT (i)-[:hasParent]->() RETURN i LIMIT 1" // TODO check if this LIMIT is valid
 	getCodeStmt     = "MATCH (i:`_hierarchy_node_%s_%s` {code:{code}}) RETURN i"
@@ -24,58 +22,22 @@ const (
 
 // Store contains DB details
 type Store struct {
-	dbPool   bolt.ClosableDriverPool
-	lastPing time.Time
+	DBPool bolt.ClosableDriverPool
 }
 
 type neoArgMap map[string]interface{}
-
-// New creates a new Storer object
-func New(dbURL string, poolSize int) (models.Storer, error) {
-	pool, err := bolt.NewClosableDriverPool(dbURL, poolSize)
-	if err != nil {
-		log.Error(err, nil)
-		return nil, err
-	}
-	return &Store{dbPool: pool, lastPing: time.Now()}, nil
-}
 
 // Close allows main to close the database connections with context
 func (s *Store) Close(ctx context.Context) error {
 	errChan := make(chan error)
 	go func() {
-		errChan <- s.dbPool.Close()
+		errChan <- s.DBPool.Close()
 	}()
 
 	select {
 	case err := <-errChan:
 		return err
 	case <-ctx.Done():
-		return ctx.Err()
-	}
-}
-
-func (s *Store) Ping(ctx context.Context) error {
-	if time.Since(s.lastPing) < 1*time.Second {
-		return nil
-	}
-
-	s.lastPing = time.Now()
-	pingDoneChan := make(chan error)
-	go func() {
-		log.Trace("db ping", nil)
-		if _, err := s.getProps(pingStmt); err != nil {
-			log.ErrorC("Ping getAll", err, nil)
-			pingDoneChan <- err
-			return
-		}
-		close(pingDoneChan)
-	}()
-	select {
-	case err := <-pingDoneChan:
-		return err
-	case <-ctx.Done():
-		close(pingDoneChan)
 		return ctx.Err()
 	}
 }
@@ -97,7 +59,7 @@ func (s *Store) GetCodelist(hierarchy *models.Hierarchy) (string, error) {
 
 func (s *Store) getProps(neoStmt string) (res map[string]interface{}, err error) {
 	logData := log.Data{"statement": neoStmt}
-	conn, err := s.dbPool.OpenPool()
+	conn, err := s.DBPool.OpenPool()
 	if err != nil {
 		log.ErrorC("getProps OpenPool", err, logData)
 		return nil, err
@@ -144,7 +106,7 @@ func (s *Store) queryResponse(hierarchy *models.Hierarchy, neoStmt string, neoAr
 	logData := log.Data{"statement": neoStmt, "row_count": 0, "neo_args": neoArgs}
 
 	log.Trace("QueryResponse executing get query", logData)
-	conn, err := s.dbPool.OpenPool()
+	conn, err := s.DBPool.OpenPool()
 	if err != nil {
 		return
 	}
@@ -210,7 +172,7 @@ func (s *Store) getAncestry(hierarchy *models.Hierarchy, code string) (ancestors
 func (s *Store) queryElements(neoStmt string, neoArgs neoArgMap, hierarchy *models.Hierarchy) ([]*models.Element, error) {
 	logData := log.Data{"db_statement": neoStmt, "row_count": 0, "db_args": neoArgs}
 	log.Trace("QueryElements: executing get query", logData)
-	conn, err := s.dbPool.OpenPool()
+	conn, err := s.DBPool.OpenPool()
 	if err != nil {
 		log.ErrorC("QueryElements pool", err, logData)
 		return nil, err
