@@ -9,11 +9,13 @@ import (
 
 	"github.com/ONSdigital/dp-hierarchy-api/api"
 	"github.com/ONSdigital/dp-hierarchy-api/config"
-	"github.com/ONSdigital/dp-hierarchy-api/health"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/dp-hierarchy-api/store"
+	"github.com/ONSdigital/go-ns/healthcheck"
 	"github.com/ONSdigital/go-ns/log"
+	neo4jhealth "github.com/ONSdigital/go-ns/neo4j"
 	"github.com/ONSdigital/go-ns/server"
+	bolt "github.com/ONSdigital/golang-neo4j-bolt-driver"
 	"github.com/gorilla/mux"
 )
 
@@ -30,19 +32,23 @@ func main() {
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 
 	// setup database
-	dbStore, err := store.New(config.DbAddr, config.Neo4jPoolSize)
+	pool, err := bolt.NewClosableDriverPool(config.DbAddr, config.Neo4jPoolSize)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
+
+	dbStore := &store.Store{DBPool: pool}
 	log.Debug("connected to db", nil)
 	api.SetDatabase(dbStore)
 
 	// setup http server
 	router := mux.NewRouter()
+	router.Path("/healthcheck").HandlerFunc(healthcheck.Do)
+	api.AddRoutes(router)
+
 	srv := server.New(config.BindAddr, router)
 	srv.HandleOSSignals = false
-	api.AddRoutes(router)
 
 	// put config into api
 	api.HierarchyAPIURL = config.HierarchyAPIURL
@@ -50,9 +56,11 @@ func main() {
 	// put constants into model
 	models.CodelistURL = config.CodelistAPIURL
 
-	// setup healthcheck
-	health.SetDatabase(dbStore)
-	health.AddRoutes(router)
+	healthTicker := healthcheck.NewTicker(
+		config.HealthCheckInterval,
+		config.HealthCheckRecoveryInterval,
+		neo4jhealth.NewHealthCheckClient(pool),
+	)
 
 	// start http server
 	httpServerDoneChan := make(chan error)
@@ -80,6 +88,8 @@ func main() {
 	logData["timeout"] = config.ShutdownTimeout
 	log.ErrorC("Start shutdown", err, logData)
 	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+
+	healthTicker.Close()
 
 	go func() {
 		if wantHTTPShutdown {
