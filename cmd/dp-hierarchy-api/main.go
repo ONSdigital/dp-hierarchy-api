@@ -7,15 +7,13 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/ONSdigital/dp-graph/graph"
 	"github.com/ONSdigital/dp-hierarchy-api/api"
 	"github.com/ONSdigital/dp-hierarchy-api/config"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
-	"github.com/ONSdigital/dp-hierarchy-api/store"
 	"github.com/ONSdigital/go-ns/healthcheck"
 	"github.com/ONSdigital/go-ns/log"
-	neo4jhealth "github.com/ONSdigital/go-ns/neo4j"
 	"github.com/ONSdigital/go-ns/server"
-	bolt "github.com/ONSdigital/golang-neo4j-bolt-driver"
 	"github.com/gorilla/mux"
 )
 
@@ -32,26 +30,20 @@ func main() {
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 
 	// setup database
-	pool, err := bolt.NewClosableDriverPool(config.DbAddr, config.Neo4jPoolSize)
+	graphDB, err := graph.NewHierarchyStore(context.Background())
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
 
-	dbStore := &store.Store{DBPool: pool}
-	log.Debug("connected to db", nil)
-	api.SetDatabase(dbStore)
-
 	// setup http server
 	router := mux.NewRouter()
 	router.Path("/healthcheck").HandlerFunc(healthcheck.Do)
-	api.AddRoutes(router)
+
+	api.New(router, graphDB, config.HierarchyAPIURL)
 
 	srv := server.New(config.BindAddr, router)
 	srv.HandleOSSignals = false
-
-	// put config into api
-	api.HierarchyAPIURL = config.HierarchyAPIURL
 
 	// put constants into model
 	models.CodelistURL = config.CodelistAPIURL
@@ -59,7 +51,7 @@ func main() {
 	healthTicker := healthcheck.NewTicker(
 		config.HealthCheckInterval,
 		config.HealthCheckRecoveryInterval,
-		neo4jhealth.NewHealthCheckClient(pool),
+		graphDB,
 	)
 
 	// start http server
@@ -100,7 +92,7 @@ func main() {
 			}
 		}
 
-		if err := dbStore.Close(shutdownContext); err != nil {
+		if err := graphDB.Close(shutdownContext); err != nil {
 			log.ErrorC("error closing db connection", err, nil)
 		} else {
 			log.Trace("db connection shutdown", nil)

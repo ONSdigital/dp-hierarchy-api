@@ -14,6 +14,5 @@ func TestGetReturnsDefaultValues(t *testing.T) {
 		So(config.BindAddr, ShouldEqual, ":22600")
 		So(config.HierarchyAPIURL, ShouldEqual, "http://localhost:22600")
 		So(config.CodelistAPIURL, ShouldEqual, "http://localhost:22400")
-		So(config.DbAddr, ShouldEqual, "bolt://localhost:7687")
 	})
 }
