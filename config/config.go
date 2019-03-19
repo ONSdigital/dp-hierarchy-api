@@ -10,12 +10,10 @@ import (
 type Config struct {
 	BindAddr                    string        `envconfig:"BIND_ADDR"`
 	HierarchyAPIURL             string        `envconfig:"HIERARCHY_API_URL"`
-	DbAddr                      string        `envconfig:"HIERARCHY_DATABASE_ADDRESS"`
 	ShutdownTimeout             time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckInterval         time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckRecoveryInterval time.Duration `envconfig:"HEALTHCHECK_RECOVERY_INTERVAL"`
 	CodelistAPIURL              string        `envconfig:"CODE_LIST_URL"`
-	Neo4jPoolSize               int           `envconfig:"NEO4J_POOL_SIZE"`
 }
 
 var configuration *Config
@@ -26,12 +24,10 @@ func Get() (*Config, error) {
 		configuration = &Config{
 			BindAddr:                    ":22600",
 			HierarchyAPIURL:             "http://localhost:22600",
-			DbAddr:                      "bolt://localhost:7687",
 			ShutdownTimeout:             5 * time.Second,
 			HealthCheckInterval:         30 * time.Second,
 			HealthCheckRecoveryInterval: 5 * time.Second,
 			CodelistAPIURL:              "http://localhost:22400",
-			Neo4jPoolSize:               30,
 		}
 		if err := envconfig.Process("", configuration); err != nil {
 			return nil, err
