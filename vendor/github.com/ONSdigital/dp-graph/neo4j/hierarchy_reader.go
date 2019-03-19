@@ -10,12 +10,6 @@ import (
 	"github.com/ONSdigital/go-ns/log"
 )
 
-// // Store contains DB details
-// type Store struct {
-// 	DBPool bolt.ClosableDriverPool
-// 	APIURL string
-// }
-
 type neoArgMap map[string]interface{}
 
 // GetCodelist obtains the codelist id for this hierarchy (also, check that it exists)
@@ -48,10 +42,6 @@ func (n *Neo4j) GetHierarchyElement(ctx context.Context, instanceID, dimension, 
 		return
 	}
 
-	if res.Children, err = n.getChildren(instanceID, dimension, code); err != nil {
-		return
-	}
-
 	if res.Breadcrumbs, err = n.getAncestry(instanceID, dimension, code); err != nil {
 		return
 	}
@@ -67,6 +57,10 @@ func (n *Neo4j) queryResponse(instanceID, dimension string, neoStmt string, neoA
 	res = &models.Response{}
 	if err = n.ReadWithParams(neoStmt, neoArgs, mapper.Hierarchy(res), false); err != nil {
 		return nil, err
+	}
+
+	if res.Children, err = n.getChildren(instanceID, dimension, res.ID); err != nil {
+		return
 	}
 
 	return
