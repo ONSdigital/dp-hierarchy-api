@@ -39,6 +39,8 @@ func (api *API) hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	logData := log.Data{"instance_id": instance, "dimension": dimension}
 	ctx := req.Context()
 
+	log.InfoCtx(ctx, "attempting to get hierarchy root", logData)
+
 	var err error
 	var codelistID string
 	if codelistID, err = api.store.GetHierarchyCodelist(ctx, instance, dimension); err != nil && err != driver.ErrNotFound {
@@ -69,6 +71,8 @@ func (api *API) hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	log.InfoCtx(ctx, "get hierarchy root successful", logData)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
 }
@@ -79,6 +83,8 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 	code := mux.Vars(req)["code"]
 	logData := log.Data{"instance_id": instance, "dimension": dimension, "code": code}
 	ctx := req.Context()
+
+	log.InfoCtx(ctx, "attempting to get hierarchy node for code", logData)
 
 	var err error
 	var codelistID string
@@ -116,6 +122,8 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	log.InfoCtx(ctx, "get hierarchy node for code successful", logData)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
