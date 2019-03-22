@@ -17,7 +17,7 @@ type Neo4jDriver interface {
 	ReadWithParams(query string, params map[string]interface{}, mapp mapper.ResultMapper, single bool) error
 	StreamRows(query string) (*BoltRowReader, error)
 	Count(query string) (count int64, err error)
-	Exec(query string, params map[string]interface{}) error
+	Exec(query string, params map[string]interface{}) (bolt.Result, error)
 	Close(ctx context.Context) error
 	Healthcheck() (string, error)
 }
@@ -139,16 +139,12 @@ func (n *NeoDriver) Count(query string) (count int64, err error) {
 	return
 }
 
-func (n *NeoDriver) Exec(query string, params map[string]interface{}) error {
+func (n *NeoDriver) Exec(query string, params map[string]interface{}) (bolt.Result, error) {
 	c, err := n.pool.OpenPool()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer c.Close()
 
-	if _, err := c.ExecNeo(query, params); err != nil {
-		return errors.WithMessage(err, "error executing neo4j query")
-	}
-
-	return nil
+	return c.ExecNeo(query, params)
 }

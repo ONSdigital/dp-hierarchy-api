@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ONSdigital/dp-graph/graph/driver"
 	"github.com/ONSdigital/dp-graph/neo4j/mapper"
 	"github.com/ONSdigital/dp-graph/neo4j/query"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
@@ -50,20 +51,22 @@ func (n *Neo4j) GetHierarchyElement(ctx context.Context, instanceID, dimension, 
 }
 
 // QueryResponse performs DB query (neoStmt, neoArgs) returning Response (should be singular)
-func (n *Neo4j) queryResponse(instanceID, dimension string, neoStmt string, neoArgs neoArgMap) (res *models.Response, err error) {
-	logData := log.Data{"statement": neoStmt, "row_count": 0, "neo_args": neoArgs}
+func (n *Neo4j) queryResponse(instanceID, dimension string, neoStmt string, neoArgs neoArgMap) (*models.Response, error) {
+	logData := log.Data{"statement": neoStmt, "neo_args": neoArgs}
 	log.Trace("QueryResponse executing get query", logData)
 
-	res = &models.Response{}
+	res := &models.Response{}
+	var err error
+
 	if err = n.ReadWithParams(neoStmt, neoArgs, mapper.Hierarchy(res), false); err != nil {
 		return nil, err
 	}
 
-	if res.Children, err = n.getChildren(instanceID, dimension, res.ID); err != nil {
-		return
+	if res.Children, err = n.getChildren(instanceID, dimension, res.ID); err != nil && err != driver.ErrNotFound {
+		return nil, err
 	}
 
-	return
+	return res, nil
 }
 
 func (n *Neo4j) getChildren(instanceID, dimension, code string) ([]*models.Element, error) {
@@ -83,7 +86,7 @@ func (n *Neo4j) getAncestry(instanceID, dimension, code string) ([]*models.Eleme
 
 // queryElements returns a list of models.Elements from the database
 func (n *Neo4j) queryElements(instanceID, dimension, neoStmt string, neoArgs neoArgMap) ([]*models.Element, error) {
-	logData := log.Data{"db_statement": neoStmt, "row_count": 0, "db_args": neoArgs}
+	logData := log.Data{"db_statement": neoStmt, "db_args": neoArgs}
 	log.Trace("QueryElements: executing get query", logData)
 
 	res := &mapper.HierarchyElements{}
