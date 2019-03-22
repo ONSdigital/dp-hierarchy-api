@@ -23,7 +23,7 @@ func (n *Neo4j) CreateInstanceHierarchyConstraints(ctx context.Context, attempt 
 
 	log.Debug("creating instance hierarchy code constraint", logData)
 
-	if err := n.Exec(q, nil); err != nil {
+	if _, err := n.Exec(q, nil); err != nil {
 		if finalErr := n.checkAttempts(err, q, attempt); finalErr != nil {
 			return finalErr
 		}
@@ -51,7 +51,7 @@ func (n *Neo4j) CloneNodes(ctx context.Context, attempt int, instanceID, codeLis
 
 	log.Debug("cloning nodes from the generic hierarchy", logData)
 
-	if err := n.Exec(q, map[string]interface{}{"code_list": codeListID}); err != nil {
+	if _, err := n.Exec(q, map[string]interface{}{"code_list": codeListID}); err != nil {
 		if finalErr := n.checkAttempts(err, q, attempt); finalErr != nil {
 			return finalErr
 		}
@@ -100,7 +100,7 @@ func (n *Neo4j) CloneRelationships(ctx context.Context, attempt int, instanceID,
 
 	log.Debug("cloning relationships from the generic hierarchy", logData)
 
-	if err := n.Exec(q, nil); err != nil {
+	if _, err := n.Exec(q, nil); err != nil {
 		if finalErr := n.checkAttempts(err, q, attempt); finalErr != nil {
 			return finalErr
 		}
@@ -128,7 +128,7 @@ func (n *Neo4j) SetNumberOfChildren(ctx context.Context, attempt int, instanceID
 
 	log.Debug("setting number of children property value on the instance hierarchy nodes", logData)
 
-	if err := n.Exec(q, nil); err != nil {
+	if _, err := n.Exec(q, nil); err != nil {
 		if finalErr := n.checkAttempts(err, instanceID, attempt); finalErr != nil {
 			return finalErr
 		}
@@ -156,7 +156,7 @@ func (n *Neo4j) SetHasData(ctx context.Context, attempt int, instanceID, dimensi
 
 	log.Debug("setting has data property on the instance hierarchy", logData)
 
-	if err := n.Exec(q, nil); err != nil {
+	if _, err := n.Exec(q, nil); err != nil {
 		if finalErr := n.checkAttempts(err, q, attempt); finalErr != nil {
 			return finalErr
 		}
@@ -183,7 +183,7 @@ func (n *Neo4j) MarkNodesToRemain(ctx context.Context, attempt int, instanceID, 
 
 	log.Debug("marking nodes to remain after trimming sparse branches", logData)
 
-	if err := n.Exec(q, nil); err != nil {
+	if _, err := n.Exec(q, nil); err != nil {
 		if finalErr := n.checkAttempts(err, q, attempt); finalErr != nil {
 			return finalErr
 		}
@@ -208,7 +208,7 @@ func (n *Neo4j) RemoveNodesNotMarkedToRemain(ctx context.Context, attempt int, i
 
 	log.Debug("removing nodes not marked to remain after trimming sparse branches", logData)
 
-	if err := n.Exec(q, nil); err != nil {
+	if _, err := n.Exec(q, nil); err != nil {
 		if finalErr := n.checkAttempts(err, q, attempt); finalErr != nil {
 			return finalErr
 		}
@@ -233,7 +233,7 @@ func (n *Neo4j) RemoveRemainMarker(ctx context.Context, attempt int, instanceID,
 
 	log.Debug("removing the remain property from the nodes that remain", logData)
 
-	if err := n.Exec(q, nil); err != nil {
+	if _, err := n.Exec(q, nil); err != nil {
 		if finalErr := n.checkAttempts(err, q, attempt); finalErr != nil {
 			return finalErr
 		}
