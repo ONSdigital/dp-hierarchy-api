@@ -83,14 +83,14 @@
 		{
 			"checksumSHA1": "Vjyl/gfY0qx2lW9te3Ieb5HV3/s=",
 			"path": "github.com/ONSdigital/go-ns/handlers/requestID",
-			"revision": "1c0a788c5b8e666c674540fc0881960857d73b3b",
-			"revisionTime": "2019-01-17T11:52:14Z"
+			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
+			"revisionTime": "2019-03-01T13:55:03Z"
 		},
 		{
 			"checksumSHA1": "wIYbelWEcrOcrlS2PmtlmQiWooU=",
 			"path": "github.com/ONSdigital/go-ns/healthcheck",
-			"revision": "1c0a788c5b8e666c674540fc0881960857d73b3b",
-			"revisionTime": "2019-01-17T11:52:14Z"
+			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
+			"revisionTime": "2019-03-01T13:55:03Z"
 		},
 		{
 			"checksumSHA1": "g9flYl+PBs6cYflFY3EpG6IcJGM=",
@@ -101,14 +101,14 @@
 		{
 			"checksumSHA1": "L4B1AA6AKWscHCZc02qk2SQU65k=",
 			"path": "github.com/ONSdigital/go-ns/rchttp",
-			"revision": "b4e5f3b551348c69049a4aba5abfd25cd2465311",
-			"revisionTime": "2019-03-01T13:28:12Z"
+			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
+			"revisionTime": "2019-03-01T13:55:03Z"
 		},
 		{
 			"checksumSHA1": "GQdzMpAMb42KQQ/GsJFSRU5dj1Y=",
 			"path": "github.com/ONSdigital/go-ns/server",
-			"revision": "1c0a788c5b8e666c674540fc0881960857d73b3b",
-			"revisionTime": "2019-01-17T11:52:14Z"
+			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
+			"revisionTime": "2019-03-01T13:55:03Z"
 		},
 		{
 			"checksumSHA1": "XuX+fvTCTujj5TRdUSec2DbEWuA=",
@@ -165,10 +165,10 @@
 			"revisionTime": "2016-08-17T18:46:32Z"
 		},
 		{
-			"checksumSHA1": "D1BVROe0MVJEDgm++mv1iVQ6+80=",
+			"checksumSHA1": "Aw8z8w/d+EFt8XCUYPjzSe0bPrU=",
 			"path": "github.com/gorilla/mux",
-			"revision": "8c683ee571b6ee7ffc9f1cafd13103c422e71cbf",
-			"revisionTime": "2017-06-21T21:27:26Z"
+			"revision": "cb4698366aa625048f3b815af6a0dea8aef9280a",
+			"revisionTime": "2018-06-05T21:15:56Z"
 		},
 		{
 			"checksumSHA1": "Js/yx9fZ3+wH1wZpHNIxSTMIaCg=",
@@ -180,8 +180,8 @@
 			"checksumSHA1": "OBvAHqWjdI4NQVAqTkcQAdTuCFY=",
 			"origin": "github.com/ONSdigital/go-ns/vendor/github.com/justinas/alice",
 			"path": "github.com/justinas/alice",
-			"revision": "84ec91434eab3ba06a753895619f60ee0ccf6552",
-			"revisionTime": "2017-11-27T12:13:36Z"
+			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
+			"revisionTime": "2019-03-01T13:55:03Z"
 		},
 		{
 			"checksumSHA1": "WYgvNuGj5g1sej4dJWBHF5bSKGE=",
@@ -239,16 +239,18 @@
 			"revisionTime": "2017-06-02T16:46:21Z"
 		},
 		{
-			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"checksumSHA1": "GtamqiJoL7PGHsN454AoffBFMa8=",
+			"origin": "github.com/ONSdigital/go-ns/vendor/golang.org/x/net/context",
 			"path": "golang.org/x/net/context",
-			"revision": "054b33e6527139ad5b1ec2f6232c3b175bd9a30c",
-			"revisionTime": "2017-07-05T22:25:54Z"
+			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
+			"revisionTime": "2019-03-01T13:55:03Z"
 		},
 		{
 			"checksumSHA1": "WHc3uByvGaMcnSoI21fhzYgbOgg=",
+			"origin": "github.com/ONSdigital/go-ns/vendor/golang.org/x/net/context/ctxhttp",
 			"path": "golang.org/x/net/context/ctxhttp",
-			"revision": "054b33e6527139ad5b1ec2f6232c3b175bd9a30c",
-			"revisionTime": "2017-07-05T22:25:54Z"
+			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
+			"revisionTime": "2019-03-01T13:55:03Z"
 		}
 	],
 	"rootPath": "github.com/ONSdigital/dp-hierarchy-api"
