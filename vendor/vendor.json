@@ -15,58 +15,58 @@
 			"revisionTime": "2019-03-22T12:13:12Z"
 		},
 		{
-			"checksumSHA1": "Wgm21ZO6di1DHWJfn6WgBlk7pZA=",
+			"checksumSHA1": "leH/fyl/KmShljBp5TdSsQr9xyc=",
 			"path": "github.com/ONSdigital/dp-graph/config",
-			"revision": "5190559178d86e7e02e440b325a9cf4bd13ef0f6",
-			"revisionTime": "2019-03-22T12:09:43Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
-			"checksumSHA1": "uWVaPGfrR9vB46fdCE6PvlPYa6U=",
+			"checksumSHA1": "UeeWNjQu6xW/Hw+v4MAfctMmIZ8=",
 			"path": "github.com/ONSdigital/dp-graph/graph",
-			"revision": "5190559178d86e7e02e440b325a9cf4bd13ef0f6",
-			"revisionTime": "2019-03-22T12:09:43Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
-			"checksumSHA1": "kH4GZFrKmM5GY3Szm/aq5yP80uY=",
+			"checksumSHA1": "Pcuy1j/u/ZJFwwooiNS9phPqOic=",
 			"path": "github.com/ONSdigital/dp-graph/graph/driver",
-			"revision": "5190559178d86e7e02e440b325a9cf4bd13ef0f6",
-			"revisionTime": "2019-03-22T12:09:43Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
-			"checksumSHA1": "LDQgTCTT5UGjNMsdvuYgrj4SGQU=",
+			"checksumSHA1": "PyMyKOBc90I+59WEPLD6Aovpv/4=",
 			"path": "github.com/ONSdigital/dp-graph/mock",
-			"revision": "5190559178d86e7e02e440b325a9cf4bd13ef0f6",
-			"revisionTime": "2019-03-22T12:09:43Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
-			"checksumSHA1": "WNjsmK3Z8On4VV2OUhrGw/fKHvM=",
+			"checksumSHA1": "bljN5KJ5+Mijg+yvE+ZZQIuJNyw=",
 			"path": "github.com/ONSdigital/dp-graph/neo4j",
-			"revision": "73ce8fc612b9f048ed9efee696485613f02430b5",
-			"revisionTime": "2019-03-22T14:37:47Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
-			"checksumSHA1": "o+JNHlKV99+BlVRMmtndBQkJRZc=",
+			"checksumSHA1": "10C6dRVYfPkcgYHMGLsJLfkPvck=",
 			"path": "github.com/ONSdigital/dp-graph/neo4j/driver",
-			"revision": "5190559178d86e7e02e440b325a9cf4bd13ef0f6",
-			"revisionTime": "2019-03-22T12:09:43Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
-			"checksumSHA1": "gXMtlID3BDxhhM3RlZxmX0d+3kE=",
+			"checksumSHA1": "u0TDiIBM7IO/NZDXOvEwm3xbqvw=",
 			"path": "github.com/ONSdigital/dp-graph/neo4j/mapper",
-			"revision": "5190559178d86e7e02e440b325a9cf4bd13ef0f6",
-			"revisionTime": "2019-03-22T12:09:43Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
-			"checksumSHA1": "sm/AshXYnyiIe27aibhp2L9tbM4=",
+			"checksumSHA1": "e2tM4AYGw5b9ZZjEh8eSw0yzGyA=",
 			"path": "github.com/ONSdigital/dp-graph/neo4j/query",
-			"revision": "5190559178d86e7e02e440b325a9cf4bd13ef0f6",
-			"revisionTime": "2019-03-22T12:09:43Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
 			"checksumSHA1": "4LiEZE5u3kqCBvzigVEhXcjac2g=",
 			"path": "github.com/ONSdigital/dp-graph/observation",
-			"revision": "5190559178d86e7e02e440b325a9cf4bd13ef0f6",
-			"revisionTime": "2019-03-22T12:09:43Z"
+			"revision": "455120c204d33ab78d5663486630583373856e41",
+			"revisionTime": "2019-03-25T17:53:13Z"
 		},
 		{
 			"checksumSHA1": "VETtCYCwbZOldq+GK7vzoMWFyng=",
@@ -95,12 +95,6 @@
 		{
 			"checksumSHA1": "g9flYl+PBs6cYflFY3EpG6IcJGM=",
 			"path": "github.com/ONSdigital/go-ns/log",
-			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
-			"revisionTime": "2019-03-01T13:55:03Z"
-		},
-		{
-			"checksumSHA1": "rFpFke/Hl7rcH3ND5b4M0idiL0c=",
-			"path": "github.com/ONSdigital/go-ns/neo4j",
 			"revision": "81b393bfc6e80674df603b7fde2f31a35e81b9dd",
 			"revisionTime": "2019-03-01T13:55:03Z"
 		},
@@ -157,12 +151,6 @@
 			"path": "github.com/ONSdigital/golang-neo4j-bolt-driver/structures/messages",
 			"revision": "da534111531d44d5dfcdda1b9057586bf7aac44c",
 			"revisionTime": "2019-02-28T15:33:39Z"
-		},
-		{
-			"checksumSHA1": "CSPbwbyzqA6sfORicn4HFtIhF/c=",
-			"path": "github.com/davecgh/go-spew/spew",
-			"revision": "8991bc29aa16c548c550c7ff78260e27b9ab7c73",
-			"revisionTime": "2018-02-21T22:46:20Z"
 		},
 		{
 			"checksumSHA1": "yIkYzW7bzAD81zHyuCNmEj4+oxQ=",
