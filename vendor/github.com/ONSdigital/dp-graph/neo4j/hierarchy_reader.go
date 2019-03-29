@@ -13,7 +13,7 @@ import (
 
 type neoArgMap map[string]interface{}
 
-// GetCodelist obtains the codelist id for this hierarchy (also, check that it exists)
+// GetHierarchyCodelist obtains the codelist id for this hierarchy (also, check that it exists)
 func (n *Neo4j) GetHierarchyCodelist(ctx context.Context, instanceID, dimension string) (string, error) {
 	neoStmt := fmt.Sprintf(query.HierarchyExists, instanceID, dimension)
 	logData := log.Data{"statement": neoStmt}
@@ -50,7 +50,7 @@ func (n *Neo4j) GetHierarchyElement(ctx context.Context, instanceID, dimension, 
 	return
 }
 
-// QueryResponse performs DB query (neoStmt, neoArgs) returning Response (should be singular)
+// queryResponse performs DB query (neoStmt, neoArgs) returning Response (should be singular)
 func (n *Neo4j) queryResponse(instanceID, dimension string, neoStmt string, neoArgs neoArgMap) (*models.Response, error) {
 	logData := log.Data{"statement": neoStmt, "neo_args": neoArgs}
 	log.Trace("QueryResponse executing get query", logData)
@@ -76,7 +76,7 @@ func (n *Neo4j) getChildren(instanceID, dimension, code string) ([]*models.Eleme
 	return n.queryElements(instanceID, dimension, neoStmt, neoArgMap{"code": code})
 }
 
-// GetAncestry retrieves a list of ancestors for this code - as breadcrumbs (ordered, nearest first)
+// getAncestry retrieves a list of ancestors for this code - as breadcrumbs (ordered, nearest first)
 func (n *Neo4j) getAncestry(instanceID, dimension, code string) ([]*models.Element, error) {
 	log.Info("get ancestry", log.Data{"instance_id": instanceID, "dimension": dimension, "code": code})
 	neoStmt := fmt.Sprintf(query.GetAncestry, instanceID, dimension)

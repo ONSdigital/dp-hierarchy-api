@@ -2,7 +2,7 @@ dp-hierarchy-api
 ================
 
 An API used to retrieve hierarchies - using root or child endpoints -
-returning children and parents for the requested node.
+returning children and parents (breadcrumbs) for the requested node.
 
 ### Getting started
 
