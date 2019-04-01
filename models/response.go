@@ -1,8 +1,11 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const codelistFormat = "%s/code-lists/%s/codes"
+const rootFormat = "%s/hierarchies/%s/%s"
 
 // CodelistURL set by main() to make accessible to all models users
 var CodelistURL string
@@ -16,7 +19,6 @@ type Response struct {
 	Links        map[string]Link `json:"links,omitempty"`
 	HasData      bool            `json:"has_data"`
 	Breadcrumbs  []*Element      `json:"breadcrumbs,omitempty"`
-	Hierarchy    Hierarchy       `json:"-"`
 }
 
 // Element is a item in a list within a Response
@@ -35,28 +37,48 @@ type Link struct {
 }
 
 // AddLinks adds links (self, codelist and populates children links)
-func (r *Response) AddLinks(hierarchy *Hierarchy, isRoot bool) {
+func (r *Response) AddLinks(host, instanceID, dimensionName, codelistID string, isRoot bool) {
 	if r.Links == nil {
 		r.Links = make(map[string]Link)
 	}
+
 	if isRoot {
-		r.Links["self"] = *GetLink(hierarchy.URL, "")
+		r.Links["self"] = *GetLink(fmt.Sprintf(rootFormat, host, instanceID, dimensionName), "")
 	} else {
-		r.Links["self"] = *GetLink(hierarchy.URL, r.ID)
+		r.Links["self"] = *GetLinkWithID(fmt.Sprintf(rootFormat, host, instanceID, dimensionName), r.ID, r.ID)
 	}
-	r.Links["code"] = *GetLinkWithID(fmt.Sprintf(codelistFormat, CodelistURL, hierarchy.CodelistId), r.ID, r.ID)
+
+	r.Links["code"] = *GetLinkWithID(fmt.Sprintf(codelistFormat, CodelistURL, codelistID), r.ID, r.ID)
+
 	for _, child := range r.Children {
-		child.AddLinks(hierarchy)
+		child.AddLinks(host, instanceID, dimensionName, codelistID, true)
+	}
+
+	an := len(r.Breadcrumbs)
+	for i, crumb := range r.Breadcrumbs {
+
+		withID := true
+		if i == (an - 1) {
+			withID = false
+		}
+
+		crumb.AddLinks(host, instanceID, dimensionName, codelistID, withID)
 	}
 }
 
 // AddLinks adds self and codelist links for Elements
-func (r *Element) AddLinks(hierarchy *Hierarchy) {
-	if r.Links == nil {
-		r.Links = make(map[string]Link)
+func (e *Element) AddLinks(host, instanceID, dimensionName, codelistID string, withID bool) {
+	if e.Links == nil {
+		e.Links = make(map[string]Link)
 	}
-	r.Links["self"] = *GetLink(hierarchy.URL, r.ID)
-	r.Links["code"] = *GetLinkWithID(fmt.Sprintf(codelistFormat, CodelistURL, hierarchy.CodelistId), r.ID, r.ID)
+
+	if !withID {
+		e.Links["self"] = *GetLink(fmt.Sprintf(rootFormat, host, instanceID, dimensionName), "")
+	} else {
+		e.Links["self"] = *GetLinkWithID(fmt.Sprintf(rootFormat, host, instanceID, dimensionName), e.ID, e.ID)
+	}
+
+	e.Links["code"] = *GetLinkWithID(fmt.Sprintf(codelistFormat, CodelistURL, codelistID), e.ID, e.ID)
 }
 
 // GetLink returns a Link{id,href} object for the given url/id (or just url if id is empty)
