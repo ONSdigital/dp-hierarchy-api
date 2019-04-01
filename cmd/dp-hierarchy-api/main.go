@@ -7,11 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/ONSdigital/dp-graph/graph"
 	"github.com/ONSdigital/dp-hierarchy-api/api"
 	"github.com/ONSdigital/dp-hierarchy-api/config"
-	"github.com/ONSdigital/dp-hierarchy-api/health"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
-	"github.com/ONSdigital/dp-hierarchy-api/store"
+	"github.com/ONSdigital/go-ns/healthcheck"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
 	"github.com/gorilla/mux"
@@ -30,29 +30,29 @@ func main() {
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 
 	// setup database
-	dbStore, err := store.New(config.DbAddr, config.Neo4jPoolSize)
+	graphDB, err := graph.NewHierarchyStore(context.Background())
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	log.Debug("connected to db", nil)
-	api.SetDatabase(dbStore)
 
 	// setup http server
 	router := mux.NewRouter()
+	router.Path("/healthcheck").HandlerFunc(healthcheck.Do)
+
+	api.New(router, graphDB, config.HierarchyAPIURL)
+
 	srv := server.New(config.BindAddr, router)
 	srv.HandleOSSignals = false
-	api.AddRoutes(router)
-
-	// put config into api
-	api.HierarchyAPIURL = config.HierarchyAPIURL
 
 	// put constants into model
 	models.CodelistURL = config.CodelistAPIURL
 
-	// setup healthcheck
-	health.SetDatabase(dbStore)
-	health.AddRoutes(router)
+	healthTicker := healthcheck.NewTicker(
+		config.HealthCheckInterval,
+		config.HealthCheckRecoveryInterval,
+		graphDB,
+	)
 
 	// start http server
 	httpServerDoneChan := make(chan error)
@@ -81,6 +81,8 @@ func main() {
 	log.ErrorC("Start shutdown", err, logData)
 	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 
+	healthTicker.Close()
+
 	go func() {
 		if wantHTTPShutdown {
 			if err := srv.Shutdown(shutdownContext); err != nil {
@@ -90,7 +92,7 @@ func main() {
 			}
 		}
 
-		if err := dbStore.Close(shutdownContext); err != nil {
+		if err := graphDB.Close(shutdownContext); err != nil {
 			log.ErrorC("error closing db connection", err, nil)
 		} else {
 			log.Trace("db connection shutdown", nil)

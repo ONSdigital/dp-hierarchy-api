@@ -5,55 +5,64 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/ONSdigital/dp-graph/graph/driver"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/gorilla/mux"
 )
 
-var database models.Storer
 var hierarchyRoute *mux.Route
 
-// HierarchyAPIURL must be set by main() to give this package access to it
-var HierarchyAPIURL string
-
-// SetDatabase sets the Storer interface for this package
-func SetDatabase(db models.Storer) {
-	database = db
+type API struct {
+	store models.Storer
+	host  string
+	r     *mux.Router
 }
 
-// AddRoutes is called by main to add the routers served by this API
-func AddRoutes(r *mux.Router) {
-	r.Path("/hierarchies/{instance}/{dimension}").HandlerFunc(hierarchiesHandler).Name("hierarchy_url")
-	r.Path("/hierarchies/{instance}/{dimension}/{code}").HandlerFunc(codesHandler)
-	hierarchyRoute = r.Get("hierarchy_url")
+func New(r *mux.Router, db models.Storer, url string) *API {
+	api := &API{
+		store: db,
+		host:  url,
+		r:     r,
+	}
+
+	api.r.Path("/hierarchies/{instance}/{dimension}").HandlerFunc(api.hierarchiesHandler).Name("hierarchy_url")
+	api.r.Path("/hierarchies/{instance}/{dimension}/{code}").HandlerFunc(api.codesHandler)
+	hierarchyRoute = api.r.Get("hierarchy_url")
+
+	return api
 }
 
-func hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
+func (api *API) hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	instance := mux.Vars(req)["instance"]
 	dimension := mux.Vars(req)["dimension"]
 	logData := log.Data{"instance_id": instance, "dimension": dimension}
+	ctx := req.Context()
 
-	hierarchy := models.Hierarchy{URL: HierarchyAPIURL + req.URL.String(), InstanceId: instance, Dimension: dimension}
+	log.InfoCtx(ctx, "attempting to get hierarchy root", logData)
 
 	var err error
-	if hierarchy.CodelistId, err = database.GetCodelist(&hierarchy); err != nil {
+	var codelistID string
+	if codelistID, err = api.store.GetHierarchyCodelist(ctx, instance, dimension); err != nil && err != driver.ErrNotFound {
 		log.ErrorR(req, err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	if hierarchy.CodelistId == "" {
+
+	if err == driver.ErrNotFound || codelistID == "" {
 		log.DebugR(req, "hierarchy not found", logData)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	var res *models.Response
-	if res, err = database.GetHierarchy(&hierarchy); err != nil {
+	if res, err = api.store.GetHierarchyRoot(ctx, instance, dimension); err != nil {
 		log.ErrorR(req, err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	res.AddLinks(&hierarchy, true)
+
+	res.AddLinks(api.host, instance, dimension, codelistID, true)
 
 	b, err := json.Marshal(res)
 	if err != nil {
@@ -62,51 +71,50 @@ func hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	log.InfoCtx(ctx, "get hierarchy root successful", logData)
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
 }
 
-func codesHandler(w http.ResponseWriter, req *http.Request) {
+func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 	instance := mux.Vars(req)["instance"]
 	dimension := mux.Vars(req)["dimension"]
 	code := mux.Vars(req)["code"]
 	logData := log.Data{"instance_id": instance, "dimension": dimension, "code": code}
+	ctx := req.Context()
 
-	// get the full URL for the hierarchy (above .../code)
-	hierPath, err := hierarchyRoute.URL("instance", instance, "dimension", dimension)
-	if err != nil {
+	log.InfoCtx(ctx, "attempting to get hierarchy node for code", logData)
+
+	var err error
+	var codelistID string
+	if codelistID, err = api.store.GetHierarchyCodelist(ctx, instance, dimension); err != nil && err != driver.ErrNotFound {
 		log.ErrorR(req, err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	hierarchy := models.Hierarchy{URL: HierarchyAPIURL + hierPath.String(), InstanceId: instance, Dimension: dimension}
 
-	if hierarchy.CodelistId, err = database.GetCodelist(&hierarchy); err != nil {
-		log.ErrorR(req, err, logData)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	if hierarchy.CodelistId == "" {
+	if err == driver.ErrNotFound || codelistID == "" {
 		log.DebugR(req, "CodesHandler hierarchy not found", logData)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	var res *models.Response
-	if res, err = database.GetCode(&hierarchy, code); err != nil {
+	if res, err = api.store.GetHierarchyElement(ctx, instance, dimension, code); err != nil && err != driver.ErrNotFound {
 		log.ErrorR(req, err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	if res.Label == "" {
+	if err == driver.ErrNotFound || res.Label == "" {
 		err = errors.New("incorrect code")
 		log.ErrorR(req, err, logData)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
-	res.AddLinks(&hierarchy, false)
+	res.AddLinks(api.host, instance, dimension, codelistID, false)
 
 	b, err := json.Marshal(res)
 	if err != nil {
@@ -114,6 +122,8 @@ func codesHandler(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	log.InfoCtx(ctx, "get hierarchy node for code successful", logData)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
