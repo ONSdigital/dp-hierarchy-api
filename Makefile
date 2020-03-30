@@ -13,5 +13,6 @@ build:
 debug: build
 	GRAPH_DRIVER_TYPE="neo4j" GRAPH_ADDR="bolt://localhost:7687" HUMAN_LOG=1 go run cmd/dp-hierarchy-api/main.go
 test:
-	go test -cover $(shell go list ./... | grep -v /vendor/)
+	go test -cover -race ./...
+
 .PHONY: build debug test
