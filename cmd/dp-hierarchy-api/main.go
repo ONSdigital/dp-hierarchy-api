@@ -50,7 +50,7 @@ func main() {
 
 	healthTicker := healthcheck.NewTicker(
 		config.HealthCheckInterval,
-		config.HealthCheckRecoveryInterval,
+		config.HealthCheckCriticalTimeout,
 		graphDB,
 	)
 
