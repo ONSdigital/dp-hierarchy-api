@@ -12,17 +12,18 @@ import (
 	"github.com/ONSdigital/dp-hierarchy-api/config"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/go-ns/healthcheck"
-	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
+	"github.com/ONSdigital/log.go/log"
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	log.Namespace = "dp-hierarchy-api"
+	ctx := context.Background()
 
 	config, err := config.Get()
 	if err != nil {
-		log.Error(err, nil)
+		log.Event(ctx, "error getting config", log.FATAL, log.Error(err))
 		os.Exit(1)
 	}
 
@@ -30,9 +31,9 @@ func main() {
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 
 	// setup database
-	graphDB, err := graph.NewHierarchyStore(context.Background())
+	graphDB, err := graph.NewHierarchyStore(ctx)
 	if err != nil {
-		log.Error(err, nil)
+		log.Event(ctx, "error creating hierarchy store", log.FATAL, log.Error(err))
 		os.Exit(1)
 	}
 
@@ -57,9 +58,9 @@ func main() {
 	// start http server
 	httpServerDoneChan := make(chan error)
 	go func() {
-		log.Debug("starting http server", log.Data{"bind_addr": config.BindAddr})
+		log.Event(ctx, "starting http server", log.INFO, log.Data{"bind_addr": config.BindAddr})
 		if err := srv.ListenAndServe(); err != nil {
-			log.Error(err, nil)
+			log.Event(ctx, "http server error", log.ERROR, log.Error(err))
 		}
 		close(httpServerDoneChan)
 	}()
@@ -78,7 +79,7 @@ func main() {
 
 	// gracefully shutdown the application, closing any open resources
 	logData["timeout"] = config.ShutdownTimeout
-	log.ErrorC("Start shutdown", err, logData)
+	log.Event(ctx, "start shutdown", log.ERROR, log.Error(err), logData)
 	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 
 	healthTicker.Close()
@@ -86,16 +87,16 @@ func main() {
 	go func() {
 		if wantHTTPShutdown {
 			if err := srv.Shutdown(shutdownContext); err != nil {
-				log.ErrorC("error closing http server", err, nil)
+				log.Event(ctx, "error closing http server", log.ERROR, log.Error(err))
 			} else {
-				log.Trace("http server shutdown", nil)
+				log.Event(ctx, "http server shutdown", log.INFO)
 			}
 		}
 
 		if err := graphDB.Close(shutdownContext); err != nil {
-			log.ErrorC("error closing db connection", err, nil)
+			log.Event(ctx, "error closing db connection", log.ERROR, log.Error(err))
 		} else {
-			log.Trace("db connection shutdown", nil)
+			log.Event(ctx, "db connection shutdown", log.INFO)
 		}
 
 		shutdownContextCancel()
@@ -104,6 +105,6 @@ func main() {
 	// wait for timeout or success (cancel)
 	<-shutdownContext.Done()
 
-	log.Info("Shutdown done", log.Data{"context": shutdownContext.Err()})
+	log.Event(ctx, "Shutdown done", log.INFO, log.Data{"context": shutdownContext.Err()})
 	os.Exit(1)
 }
