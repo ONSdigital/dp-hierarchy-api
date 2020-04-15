@@ -26,7 +26,7 @@ func Get() (*Config, error) {
 			HierarchyAPIURL:            "http://localhost:22600",
 			ShutdownTimeout:            5 * time.Second,
 			HealthCheckInterval:        30 * time.Second,
-			HealthCheckCriticalTimeout: 5 * time.Second,
+			HealthCheckCriticalTimeout: 90 * time.Second,
 			CodelistAPIURL:             "http://localhost:22400",
 		}
 		if err := envconfig.Process("", configuration); err != nil {
