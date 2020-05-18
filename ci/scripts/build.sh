@@ -2,9 +2,7 @@
 
 cwd=$(pwd)
 
-export GOPATH=$cwd/go
-
-pushd $GOPATH/src/github.com/ONSdigital/dp-hierarchy-api
+pushd $cwd/dp-hierarchy-api
   make build && mv build/$(go env GOOS)-$(go env GOARCH)/* $cwd/build
   cp Dockerfile.concourse $cwd/build
 popd

@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"errors"
+	"github.com/ONSdigital/dp-api-clients-go/health"
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,18 +13,28 @@ import (
 	"github.com/ONSdigital/dp-hierarchy-api/api"
 	"github.com/ONSdigital/dp-hierarchy-api/config"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
-	"github.com/ONSdigital/go-ns/healthcheck"
-	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
+	"github.com/ONSdigital/log.go/log"
 	"github.com/gorilla/mux"
 )
 
+var (
+	// BuildTime represents the time in which the service was built
+	BuildTime string
+	// GitCommit represents the commit (SHA-1) hash of the service that is running
+	GitCommit string
+	// Version represents the version of the service that is running
+	Version string
+)
+
 func main() {
+
+	ctx := context.Background()
 	log.Namespace = "dp-hierarchy-api"
 
 	config, err := config.Get()
 	if err != nil {
-		log.Error(err, nil)
+		log.Event(ctx, "error getting config", log.FATAL, log.Error(err))
 		os.Exit(1)
 	}
 
@@ -30,15 +42,17 @@ func main() {
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 
 	// setup database
-	graphDB, err := graph.NewHierarchyStore(context.Background())
+	graphDB, err := graph.NewHierarchyStore(ctx)
 	if err != nil {
-		log.Error(err, nil)
+		log.Event(ctx, "error creating hierarchy store", log.FATAL, log.Error(err))
 		os.Exit(1)
 	}
 
+	hc := startHealthCheck(ctx, config, graphDB)
+
 	// setup http server
 	router := mux.NewRouter()
-	router.Path("/healthcheck").HandlerFunc(healthcheck.Do)
+	router.Path("/health").HandlerFunc(hc.Handler)
 
 	api.New(router, graphDB, config.HierarchyAPIURL)
 
@@ -48,18 +62,12 @@ func main() {
 	// put constants into model
 	models.CodelistURL = config.CodelistAPIURL
 
-	healthTicker := healthcheck.NewTicker(
-		config.HealthCheckInterval,
-		config.HealthCheckRecoveryInterval,
-		graphDB,
-	)
-
 	// start http server
 	httpServerDoneChan := make(chan error)
 	go func() {
-		log.Debug("starting http server", log.Data{"bind_addr": config.BindAddr})
+		log.Event(ctx, "starting http server", log.INFO, log.Data{"bind_addr": config.BindAddr})
 		if err := srv.ListenAndServe(); err != nil {
-			log.Error(err, nil)
+			log.Event(ctx, "http server error", log.ERROR, log.Error(err))
 		}
 		close(httpServerDoneChan)
 	}()
@@ -78,24 +86,24 @@ func main() {
 
 	// gracefully shutdown the application, closing any open resources
 	logData["timeout"] = config.ShutdownTimeout
-	log.ErrorC("Start shutdown", err, logData)
+	log.Event(ctx, "start shutdown", log.ERROR, log.Error(err), logData)
 	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 
-	healthTicker.Close()
+	hc.Stop()
 
 	go func() {
 		if wantHTTPShutdown {
 			if err := srv.Shutdown(shutdownContext); err != nil {
-				log.ErrorC("error closing http server", err, nil)
+				log.Event(ctx, "error closing http server", log.ERROR, log.Error(err))
 			} else {
-				log.Trace("http server shutdown", nil)
+				log.Event(ctx, "http server shutdown", log.INFO)
 			}
 		}
 
 		if err := graphDB.Close(shutdownContext); err != nil {
-			log.ErrorC("error closing db connection", err, nil)
+			log.Event(ctx, "error closing db connection", log.ERROR, log.Error(err))
 		} else {
-			log.Trace("db connection shutdown", nil)
+			log.Event(ctx, "db connection shutdown", log.INFO)
 		}
 
 		shutdownContextCancel()
@@ -104,6 +112,37 @@ func main() {
 	// wait for timeout or success (cancel)
 	<-shutdownContext.Done()
 
-	log.Info("Shutdown done", log.Data{"context": shutdownContext.Err()})
+	log.Event(ctx, "Shutdown done", log.INFO, log.Data{"context": shutdownContext.Err()})
 	os.Exit(1)
+}
+
+func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph.DB) *healthcheck.HealthCheck {
+
+	hasErrors := false
+	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, Version)
+	if err != nil {
+		log.Event(ctx, "error creating version info", log.FATAL, log.Error(err))
+		hasErrors = true
+	}
+
+	hc := healthcheck.New(versionInfo, config.HealthCheckCriticalTimeout, config.HealthCheckInterval)
+
+	if err = hc.AddCheck("Neo4J", graphDB.Checker); err != nil {
+		hasErrors = true
+		log.Event(nil, "error adding check for graph db", log.ERROR, log.Error(err))
+	}
+
+	codeListAPIHealthCheckClient := health.NewClient("Code List API", config.CodelistAPIURL)
+	if err = hc.AddCheck("Code List API", codeListAPIHealthCheckClient.Checker); err != nil {
+		log.Event(ctx, "error creating code list API health check", log.Error(err))
+		hasErrors = true
+	}
+
+	if hasErrors {
+		os.Exit(1)
+	}
+
+	hc.Start(ctx)
+
+	return &hc
 }
