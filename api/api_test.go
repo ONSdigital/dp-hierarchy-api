@@ -2,13 +2,13 @@ package api
 
 import (
 	"context"
+	"github.com/ONSdigital/dp-graph/v2/graph/driver"
+	dbmodels "github.com/ONSdigital/dp-graph/v2/models"
+	"github.com/ONSdigital/dp-hierarchy-api/datastore/datastoretest"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/ONSdigital/dp-graph/graph/driver"
-	"github.com/ONSdigital/dp-hierarchy-api/models"
-	"github.com/ONSdigital/dp-hierarchy-api/models/modelstest"
 	"github.com/gorilla/mux"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -22,14 +22,14 @@ var router = mux.NewRouter()
 func TestAPIResponseStatuses(t *testing.T) {
 	t.Parallel()
 
-	validMockDatastore := &modelstest.StorerMock{
-		GetHierarchyRootFunc: func(ctx context.Context, instanceID, dimension string) (*models.Response, error) {
-			return &models.Response{
+	validMockDatastore := &datastoretest.StorerMock{
+		GetHierarchyRootFunc: func(ctx context.Context, instanceID, dimension string) (*dbmodels.HierarchyResponse, error) {
+			return &dbmodels.HierarchyResponse{
 				Label: "validlabel",
 			}, nil
 		},
-		GetHierarchyElementFunc: func(ctx context.Context, instanceID, dimension, code string) (*models.Response, error) {
-			return &models.Response{
+		GetHierarchyElementFunc: func(ctx context.Context, instanceID, dimension, code string) (*dbmodels.HierarchyResponse, error) {
+			return &dbmodels.HierarchyResponse{
 				Label: "validlabel",
 			}, nil
 		},
@@ -38,11 +38,11 @@ func TestAPIResponseStatuses(t *testing.T) {
 		},
 	}
 
-	notFoundMockDatastore := &modelstest.StorerMock{
-		GetHierarchyRootFunc: func(ctx context.Context, instanceID, dimension string) (*models.Response, error) {
+	notFoundMockDatastore := &datastoretest.StorerMock{
+		GetHierarchyRootFunc: func(ctx context.Context, instanceID, dimension string) (*dbmodels.HierarchyResponse, error) {
 			return nil, driver.ErrNotFound
 		},
-		GetHierarchyElementFunc: func(ctx context.Context, instanceID, dimension, code string) (*models.Response, error) {
+		GetHierarchyElementFunc: func(ctx context.Context, instanceID, dimension, code string) (*dbmodels.HierarchyResponse, error) {
 			return nil, driver.ErrNotFound
 		},
 		GetHierarchyCodelistFunc: func(ctx context.Context, instanceID, dimension string) (string, error) {
