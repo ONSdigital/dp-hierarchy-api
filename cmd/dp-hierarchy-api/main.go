@@ -94,15 +94,12 @@ func main() {
 
 		log.Event(ctx, "stopping health checks", log.INFO)
 		hc.Stop()
-		log.Event(ctx, "health checks stopped", log.INFO)
 
 		if wantHTTPShutdown {
 			log.Event(ctx, "stopping http server", log.INFO)
 			if err := srv.Shutdown(shutdownContext); err != nil {
 				log.Event(ctx, "error closing http server", log.ERROR, log.Error(err))
 				hasShutdownError = true
-			} else {
-				log.Event(ctx, "http server shutdown", log.INFO)
 			}
 		}
 
@@ -110,8 +107,6 @@ func main() {
 		if err := graphDB.Close(shutdownContext); err != nil {
 			log.Event(ctx, "error closing db connection", log.ERROR, log.Error(err))
 			hasShutdownError = true
-		} else {
-			log.Event(ctx, "graph db connection closed", log.INFO)
 		}
 
 		shutdownContextCancel()
