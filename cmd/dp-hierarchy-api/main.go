@@ -86,24 +86,27 @@ func main() {
 
 	// gracefully shutdown the application, closing any open resources
 	logData["timeout"] = config.ShutdownTimeout
-	log.Event(ctx, "start shutdown", log.ERROR, log.Error(err), logData)
+	log.Event(ctx, "start shutdown", log.INFO, logData)
 	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
-
-	hc.Stop()
+	hasShutdownError := false
 
 	go func() {
+
+		log.Event(ctx, "stopping health checks", log.INFO)
+		hc.Stop()
+
 		if wantHTTPShutdown {
+			log.Event(ctx, "stopping http server", log.INFO)
 			if err := srv.Shutdown(shutdownContext); err != nil {
 				log.Event(ctx, "error closing http server", log.ERROR, log.Error(err))
-			} else {
-				log.Event(ctx, "http server shutdown", log.INFO)
+				hasShutdownError = true
 			}
 		}
 
+		log.Event(ctx, "closing graph db connection", log.INFO)
 		if err := graphDB.Close(shutdownContext); err != nil {
 			log.Event(ctx, "error closing db connection", log.ERROR, log.Error(err))
-		} else {
-			log.Event(ctx, "db connection shutdown", log.INFO)
+			hasShutdownError = true
 		}
 
 		shutdownContextCancel()
@@ -112,8 +115,14 @@ func main() {
 	// wait for timeout or success (cancel)
 	<-shutdownContext.Done()
 
-	log.Event(ctx, "Shutdown done", log.INFO, log.Data{"context": shutdownContext.Err()})
-	os.Exit(1)
+	if hasShutdownError {
+		err = errors.New("failed to shutdown gracefully")
+		log.Event(ctx, "failed to shutdown gracefully ", log.ERROR, log.Error(err))
+		os.Exit(1)
+	}
+
+	log.Event(ctx, "graceful shutdown was successful", log.INFO)
+	os.Exit(0)
 }
 
 func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph.DB) *healthcheck.HealthCheck {
