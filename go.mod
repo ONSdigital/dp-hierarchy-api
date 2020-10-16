@@ -3,8 +3,8 @@ module github.com/ONSdigital/dp-hierarchy-api
 go 1.13
 
 require (
-	github.com/ONSdigital/dp-api-clients-go v1.28.0
-	github.com/ONSdigital/dp-graph/v2 v2.2.0
+	github.com/ONSdigital/dp-api-clients-go v1.30.0
+	github.com/ONSdigital/dp-graph/v2 v2.2.2
 	github.com/ONSdigital/dp-healthcheck v1.0.5
 	github.com/ONSdigital/dp-net v1.0.9
 	github.com/ONSdigital/log.go v1.0.1
