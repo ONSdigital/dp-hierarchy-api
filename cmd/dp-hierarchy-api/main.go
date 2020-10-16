@@ -48,6 +48,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	graphErrorConsumer := graph.NewLoggingErrorConsumer(ctx, graphDB.Errors)
+
 	hc := startHealthCheck(ctx, config, graphDB)
 
 	// setup http server
@@ -106,6 +108,12 @@ func main() {
 		log.Event(ctx, "closing graph db connection", log.INFO)
 		if err := graphDB.Close(shutdownContext); err != nil {
 			log.Event(ctx, "error closing db connection", log.ERROR, log.Error(err))
+			hasShutdownError = true
+		}
+
+		log.Event(ctx, "closing graph db error consumer", log.INFO)
+		if err := graphErrorConsumer.Close(shutdownContext); err != nil {
+			log.Event(ctx, "error closing graph db error consumer", log.ERROR, log.Error(err))
 			hasShutdownError = true
 		}
 
