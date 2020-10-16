@@ -3,17 +3,17 @@ package main
 import (
 	"context"
 	"errors"
-	"github.com/ONSdigital/dp-api-clients-go/health"
-	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/dp-graph/v2/graph"
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/dp-hierarchy-api/api"
 	"github.com/ONSdigital/dp-hierarchy-api/config"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
-	"github.com/ONSdigital/go-ns/server"
+	dphttp "github.com/ONSdigital/dp-net/http"
 	"github.com/ONSdigital/log.go/log"
 	"github.com/gorilla/mux"
 )
@@ -58,7 +58,7 @@ func main() {
 
 	api.New(router, graphDB, config.HierarchyAPIURL)
 
-	srv := server.New(config.BindAddr, router)
+	srv := dphttp.NewServer(config.BindAddr, router)
 	srv.HandleOSSignals = false
 
 	// put constants into model
