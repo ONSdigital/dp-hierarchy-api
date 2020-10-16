@@ -32,7 +32,6 @@ debug: build
 	HUMAN_LOG=1 go run $(LDFLAGS) -race cmd/dp-hierarchy-api/main.go
 
 PHONY: test
-	HUMAN_LOG=1 go run $(LDFLAGS) cmd/dp-hierarchy-api/main.go
 test:
 	go test -cover -race ./...
 
