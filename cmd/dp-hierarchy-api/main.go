@@ -144,7 +144,7 @@ func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph
 
 	hc := healthcheck.New(versionInfo, config.HealthCheckCriticalTimeout, config.HealthCheckInterval)
 
-	if err = hc.AddCheck("Neo4J", graphDB.Checker); err != nil {
+	if err = hc.AddCheck("Graph DB", graphDB.Checker); err != nil {
 		hasErrors = true
 		log.Event(nil, "error adding check for graph db", log.ERROR, log.Error(err))
 	}
