@@ -12,6 +12,9 @@ LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=$(BUILD_
 export GOOS?=$(shell go env GOOS)
 export GOARCH?=$(shell go env GOARCH)
 
+export GRAPH_DRIVER_TYPE?=neo4j
+export GRAPH_ADDR?=bolt://localhost:7687
+
 PHONY: all
 all: audit test build
 
@@ -26,7 +29,7 @@ build:
 
 PHONY: debug
 debug: build
-	GRAPH_DRIVER_TYPE="neo4j" GRAPH_ADDR="bolt://localhost:7687" HUMAN_LOG=1 go run $(LDFLAGS) -race cmd/dp-hierarchy-api/main.go
+	HUMAN_LOG=1 go run $(LDFLAGS) -race cmd/dp-hierarchy-api/main.go
 
 PHONY: test
 test:

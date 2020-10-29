@@ -3,17 +3,17 @@ package main
 import (
 	"context"
 	"errors"
-	"github.com/ONSdigital/dp-api-clients-go/health"
-	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/dp-graph/v2/graph"
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/dp-hierarchy-api/api"
 	"github.com/ONSdigital/dp-hierarchy-api/config"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
-	"github.com/ONSdigital/go-ns/server"
+	dphttp "github.com/ONSdigital/dp-net/http"
 	"github.com/ONSdigital/log.go/log"
 	"github.com/gorilla/mux"
 )
@@ -48,6 +48,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	graphErrorConsumer := graph.NewLoggingErrorConsumer(ctx, graphDB.Errors)
+
 	hc := startHealthCheck(ctx, config, graphDB)
 
 	// setup http server
@@ -56,7 +58,7 @@ func main() {
 
 	api.New(router, graphDB, config.HierarchyAPIURL)
 
-	srv := server.New(config.BindAddr, router)
+	srv := dphttp.NewServer(config.BindAddr, router)
 	srv.HandleOSSignals = false
 
 	// put constants into model
@@ -86,24 +88,33 @@ func main() {
 
 	// gracefully shutdown the application, closing any open resources
 	logData["timeout"] = config.ShutdownTimeout
-	log.Event(ctx, "start shutdown", log.ERROR, log.Error(err), logData)
+	log.Event(ctx, "start shutdown", log.INFO, logData)
 	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
-
-	hc.Stop()
+	hasShutdownError := false
 
 	go func() {
+
+		log.Event(ctx, "stopping health checks", log.INFO)
+		hc.Stop()
+
 		if wantHTTPShutdown {
+			log.Event(ctx, "stopping http server", log.INFO)
 			if err := srv.Shutdown(shutdownContext); err != nil {
 				log.Event(ctx, "error closing http server", log.ERROR, log.Error(err))
-			} else {
-				log.Event(ctx, "http server shutdown", log.INFO)
+				hasShutdownError = true
 			}
 		}
 
+		log.Event(ctx, "closing graph db connection", log.INFO)
 		if err := graphDB.Close(shutdownContext); err != nil {
 			log.Event(ctx, "error closing db connection", log.ERROR, log.Error(err))
-		} else {
-			log.Event(ctx, "db connection shutdown", log.INFO)
+			hasShutdownError = true
+		}
+
+		log.Event(ctx, "closing graph db error consumer", log.INFO)
+		if err := graphErrorConsumer.Close(shutdownContext); err != nil {
+			log.Event(ctx, "error closing graph db error consumer", log.ERROR, log.Error(err))
+			hasShutdownError = true
 		}
 
 		shutdownContextCancel()
@@ -112,8 +123,14 @@ func main() {
 	// wait for timeout or success (cancel)
 	<-shutdownContext.Done()
 
-	log.Event(ctx, "Shutdown done", log.INFO, log.Data{"context": shutdownContext.Err()})
-	os.Exit(1)
+	if hasShutdownError {
+		err = errors.New("failed to shutdown gracefully")
+		log.Event(ctx, "failed to shutdown gracefully ", log.ERROR, log.Error(err))
+		os.Exit(1)
+	}
+
+	log.Event(ctx, "graceful shutdown was successful", log.INFO)
+	os.Exit(0)
 }
 
 func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph.DB) *healthcheck.HealthCheck {
@@ -127,7 +144,7 @@ func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph
 
 	hc := healthcheck.New(versionInfo, config.HealthCheckCriticalTimeout, config.HealthCheckInterval)
 
-	if err = hc.AddCheck("Neo4J", graphDB.Checker); err != nil {
+	if err = hc.AddCheck("Graph DB", graphDB.Checker); err != nil {
 		hasErrors = true
 		log.Event(nil, "error adding check for graph db", log.ERROR, log.Error(err))
 	}
