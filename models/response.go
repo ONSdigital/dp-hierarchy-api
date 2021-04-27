@@ -16,7 +16,7 @@ type Response struct {
 	Label        string          `json:"label"`
 	Children     []*Element      `json:"children,omitempty"`
 	NoOfChildren int64           `json:"no_of_children,omitempty"`
-	Order        int64           `json:"order,omitempty"`
+	Order        *int64          `json:"order,omitempty"`
 	Links        map[string]Link `json:"links,omitempty"`
 	HasData      bool            `json:"has_data"`
 	Breadcrumbs  []*Element      `json:"breadcrumbs,omitempty"`
@@ -27,7 +27,7 @@ type Element struct {
 	ID           string          `json:"-"`
 	Label        string          `json:"label"`
 	NoOfChildren int64           `json:"no_of_children,omitempty"`
-	Order        int64           `json:"order,omitempty"`
+	Order        *int64          `json:"order,omitempty"`
 	Links        map[string]Link `json:"links,omitempty"`
 	HasData      bool            `json:"has_data"`
 }

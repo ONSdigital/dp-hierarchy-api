@@ -103,28 +103,30 @@ func TestMapHierarchyResponse(t *testing.T) {
 	})
 
 	Convey("A populated DB response without children or breadcrumbs is mapped to the corresponding API response", t, func() {
+		var order int64 = 123
 		dbResponse := &dbmodels.HierarchyResponse{
 			ID:      "testID",
 			Label:   "testLabel",
-			Order:   123,
+			Order:   &order,
 			HasData: true,
 		}
 		expected := models.Response{
 			ID:      "testID",
 			Label:   "testLabel",
-			Order:   123,
+			Order:   &order,
 			HasData: true,
 		}
 		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
 	})
 
 	Convey("A DB response with children is mapped to the corresponding API response", t, func() {
+		var order int64 = 321
 		dbResponse := &dbmodels.HierarchyResponse{
 			Children: []*dbmodels.HierarchyElement{
 				{
 					ID:      "childID",
 					Label:   "childLabel",
-					Order:   321,
+					Order:   &order,
 					HasData: true,
 				},
 			},
@@ -135,7 +137,7 @@ func TestMapHierarchyResponse(t *testing.T) {
 				{
 					ID:      "childID",
 					Label:   "childLabel",
-					Order:   321,
+					Order:   &order,
 					HasData: true,
 				},
 			},
@@ -145,12 +147,13 @@ func TestMapHierarchyResponse(t *testing.T) {
 	})
 
 	Convey("A DB response with breadcrumbs is mapped to the corresponding API response", t, func() {
+		var order int64 = 456
 		dbResponse := &dbmodels.HierarchyResponse{
 			Breadcrumbs: []*dbmodels.HierarchyElement{
 				{
 					ID:      "bcID",
 					Label:   "bcLabel",
-					Order:   456,
+					Order:   &order,
 					HasData: true,
 				},
 			},
@@ -160,7 +163,7 @@ func TestMapHierarchyResponse(t *testing.T) {
 				{
 					ID:      "bcID",
 					Label:   "bcLabel",
-					Order:   456,
+					Order:   &order,
 					HasData: true,
 				},
 			},
