@@ -2,12 +2,14 @@ package api
 
 import (
 	"context"
-	"github.com/ONSdigital/dp-graph/v2/graph/driver"
-	dbmodels "github.com/ONSdigital/dp-graph/v2/models"
-	"github.com/ONSdigital/dp-hierarchy-api/datastore/datastoretest"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/ONSdigital/dp-graph/v2/graph/driver"
+	dbmodels "github.com/ONSdigital/dp-graph/v2/models"
+	"github.com/ONSdigital/dp-hierarchy-api/datastore/datastoretest"
+	"github.com/ONSdigital/dp-hierarchy-api/models"
 
 	"github.com/gorilla/mux"
 	. "github.com/smartystreets/goconvey/convey"
@@ -88,5 +90,84 @@ func TestAPIResponseStatuses(t *testing.T) {
 
 		api.codesHandler(w, r)
 		So(w.Code, ShouldEqual, http.StatusNotFound)
+	})
+}
+
+func TestMapHierarchyResponse(t *testing.T) {
+	t.Parallel()
+
+	Convey("An empty DB response is mapped to an empty API response", t, func() {
+		dbResponse := &dbmodels.HierarchyResponse{}
+		expected := models.Response{}
+		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
+	})
+
+	Convey("A populated DB response without children or breadcrumbs is mapped to the corresponding API response", t, func() {
+		var order int64 = 123
+		dbResponse := &dbmodels.HierarchyResponse{
+			ID:      "testID",
+			Label:   "testLabel",
+			Order:   &order,
+			HasData: true,
+		}
+		expected := models.Response{
+			ID:      "testID",
+			Label:   "testLabel",
+			Order:   &order,
+			HasData: true,
+		}
+		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
+	})
+
+	Convey("A DB response with children is mapped to the corresponding API response", t, func() {
+		var order int64 = 321
+		dbResponse := &dbmodels.HierarchyResponse{
+			Children: []*dbmodels.HierarchyElement{
+				{
+					ID:      "childID",
+					Label:   "childLabel",
+					Order:   &order,
+					HasData: true,
+				},
+			},
+			NoOfChildren: 1,
+		}
+		expected := models.Response{
+			Children: []*models.Element{
+				{
+					ID:      "childID",
+					Label:   "childLabel",
+					Order:   &order,
+					HasData: true,
+				},
+			},
+			NoOfChildren: 1,
+		}
+		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
+	})
+
+	Convey("A DB response with breadcrumbs is mapped to the corresponding API response", t, func() {
+		var order int64 = 456
+		dbResponse := &dbmodels.HierarchyResponse{
+			Breadcrumbs: []*dbmodels.HierarchyElement{
+				{
+					ID:      "bcID",
+					Label:   "bcLabel",
+					Order:   &order,
+					HasData: true,
+				},
+			},
+		}
+		expected := models.Response{
+			Breadcrumbs: []*models.Element{
+				{
+					ID:      "bcID",
+					Label:   "bcLabel",
+					Order:   &order,
+					HasData: true,
+				},
+			},
+		}
+		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
 	})
 }

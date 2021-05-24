@@ -3,10 +3,11 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+
 	"github.com/ONSdigital/dp-graph/v2/graph/driver"
 	dbmodels "github.com/ONSdigital/dp-graph/v2/models"
 	"github.com/ONSdigital/dp-hierarchy-api/datastore"
-	"net/http"
 
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/log.go/log"
@@ -142,6 +143,7 @@ func mapHierarchyResponse(dbResponse *dbmodels.HierarchyResponse) models.Respons
 		NoOfChildren: dbResponse.NoOfChildren,
 		HasData:      dbResponse.HasData,
 		Breadcrumbs:  mapHierarchyElements(dbResponse.Breadcrumbs),
+		Order:        dbResponse.Order,
 	}
 
 	return response
@@ -158,6 +160,7 @@ func mapHierarchyElements(dbElements []*dbmodels.HierarchyElement) []*models.Ele
 			Label:        dbElement.Label,
 			NoOfChildren: dbElement.NoOfChildren,
 			HasData:      dbElement.HasData,
+			Order:        dbElement.Order,
 		}
 
 		elements = append(elements, element)
