@@ -14,7 +14,7 @@ import (
 	"github.com/ONSdigital/dp-hierarchy-api/config"
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	dphttp "github.com/ONSdigital/dp-net/http"
-	"github.com/ONSdigital/log.go/log"
+	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/gorilla/mux"
 )
 
@@ -34,7 +34,7 @@ func main() {
 
 	config, err := config.Get()
 	if err != nil {
-		log.Event(ctx, "error getting config", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "error getting config", err)
 		os.Exit(1)
 	}
 
@@ -44,7 +44,7 @@ func main() {
 	// setup database
 	graphDB, err := graph.NewHierarchyStore(ctx)
 	if err != nil {
-		log.Event(ctx, "error creating hierarchy store", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "error creating hierarchy store", err)
 		os.Exit(1)
 	}
 
@@ -67,9 +67,9 @@ func main() {
 	// start http server
 	httpServerDoneChan := make(chan error)
 	go func() {
-		log.Event(ctx, "starting http server", log.INFO, log.Data{"bind_addr": config.BindAddr})
+		log.Info(ctx, "starting http server", log.Data{"bind_addr": config.BindAddr})
 		if err := srv.ListenAndServe(); err != nil {
-			log.Event(ctx, "http server error", log.ERROR, log.Error(err))
+			log.Error(ctx, "http server error", err)
 		}
 		close(httpServerDoneChan)
 	}()
@@ -88,32 +88,32 @@ func main() {
 
 	// gracefully shutdown the application, closing any open resources
 	logData["timeout"] = config.ShutdownTimeout
-	log.Event(ctx, "start shutdown", log.INFO, logData)
+	log.Info(ctx, "start shutdown", logData)
 	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
 	hasShutdownError := false
 
 	go func() {
 
-		log.Event(ctx, "stopping health checks", log.INFO)
+		log.Info(ctx, "stopping health checks")
 		hc.Stop()
 
 		if wantHTTPShutdown {
-			log.Event(ctx, "stopping http server", log.INFO)
+			log.Info(ctx, "stopping http server")
 			if err := srv.Shutdown(shutdownContext); err != nil {
-				log.Event(ctx, "error closing http server", log.ERROR, log.Error(err))
+				log.Error(ctx, "error closing http server", err)
 				hasShutdownError = true
 			}
 		}
 
-		log.Event(ctx, "closing graph db connection", log.INFO)
+		log.Info(ctx, "closing graph db connection")
 		if err := graphDB.Close(shutdownContext); err != nil {
-			log.Event(ctx, "error closing db connection", log.ERROR, log.Error(err))
+			log.Error(ctx, "error closing db connection", err)
 			hasShutdownError = true
 		}
 
-		log.Event(ctx, "closing graph db error consumer", log.INFO)
+		log.Info(ctx, "closing graph db error consumer")
 		if err := graphErrorConsumer.Close(shutdownContext); err != nil {
-			log.Event(ctx, "error closing graph db error consumer", log.ERROR, log.Error(err))
+			log.Error(ctx, "error closing graph db error consumer", err)
 			hasShutdownError = true
 		}
 
@@ -125,11 +125,11 @@ func main() {
 
 	if hasShutdownError {
 		err = errors.New("failed to shutdown gracefully")
-		log.Event(ctx, "failed to shutdown gracefully ", log.ERROR, log.Error(err))
+		log.Error(ctx, "failed to shutdown gracefully ", err)
 		os.Exit(1)
 	}
 
-	log.Event(ctx, "graceful shutdown was successful", log.INFO)
+	log.Info(ctx, "graceful shutdown was successful")
 	os.Exit(0)
 }
 
@@ -138,7 +138,7 @@ func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph
 	hasErrors := false
 	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, Version)
 	if err != nil {
-		log.Event(ctx, "error creating version info", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "error creating version info", err)
 		hasErrors = true
 	}
 
@@ -146,12 +146,12 @@ func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph
 
 	if err = hc.AddCheck("Graph DB", graphDB.Checker); err != nil {
 		hasErrors = true
-		log.Event(nil, "error adding check for graph db", log.ERROR, log.Error(err))
+		log.Error(ctx, "error adding check for graph db", err)
 	}
 
 	codeListAPIHealthCheckClient := health.NewClient("Code List API", config.CodelistAPIURL)
 	if err = hc.AddCheck("Code List API", codeListAPIHealthCheckClient.Checker); err != nil {
-		log.Event(ctx, "error creating code list API health check", log.Error(err))
+		log.Error(ctx, "error creating code list API health check", err)
 		hasErrors = true
 	}
 
