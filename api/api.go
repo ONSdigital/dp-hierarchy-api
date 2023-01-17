@@ -10,7 +10,7 @@ import (
 	"github.com/ONSdigital/dp-hierarchy-api/datastore"
 
 	"github.com/ONSdigital/dp-hierarchy-api/models"
-	"github.com/ONSdigital/log.go/log"
+	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/gorilla/mux"
 )
 
@@ -42,25 +42,25 @@ func (api *API) hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	logData := log.Data{"instance_id": instance, "dimension": dimension}
 	ctx := req.Context()
 
-	log.Event(ctx, "attempting to get hierarchy root", logData)
+	log.Info(ctx, "attempting to get hierarchy root", logData)
 
 	var err error
 	var codelistID string
 	if codelistID, err = api.store.GetHierarchyCodelist(ctx, instance, dimension); err != nil && err != driver.ErrNotFound {
-		log.Event(ctx, "error getting hierarchy code list", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "error getting hierarchy code list", err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if err == driver.ErrNotFound || codelistID == "" {
-		log.Event(ctx, "hierarchy not found", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "hierarchy not found", err, logData)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	var dbRes *dbmodels.HierarchyResponse
 	if dbRes, err = api.store.GetHierarchyRoot(ctx, instance, dimension); err != nil {
-		log.Event(ctx, "error getting hierarchy root", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "error getting hierarchy root", err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -70,12 +70,12 @@ func (api *API) hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 
 	b, err := json.Marshal(res)
 	if err != nil {
-		log.Event(ctx, "error marshalling json response", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "error marshalling json response", err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	log.Event(ctx, "get hierarchy root successful", log.INFO, logData)
+	log.Info(ctx, "get hierarchy root successful", logData)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
@@ -88,32 +88,32 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 	logData := log.Data{"instance_id": instance, "dimension": dimension, "code": code}
 	ctx := req.Context()
 
-	log.Event(ctx, "attempting to get hierarchy node for code", log.INFO, logData)
+	log.Info(ctx, "attempting to get hierarchy node for code", logData)
 
 	var err error
 	var codelistID string
 	if codelistID, err = api.store.GetHierarchyCodelist(ctx, instance, dimension); err != nil && err != driver.ErrNotFound {
-		log.Event(ctx, "error getting hierarchy code list", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "error getting hierarchy code list", err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if err == driver.ErrNotFound || codelistID == "" {
-		log.Event(ctx, "hierarchy not found", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "hierarchy not found", err, logData)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	var dbRes *dbmodels.HierarchyResponse
 	if dbRes, err = api.store.GetHierarchyElement(ctx, instance, dimension, code); err != nil && err != driver.ErrNotFound {
-		log.Event(ctx, "error getting hierarchy element", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "error getting hierarchy element", err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if err == driver.ErrNotFound || dbRes.Label == "" {
 		err = errors.New("incorrect code")
-		log.Event(ctx, "code not found", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "code not found", err, logData)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -123,12 +123,12 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 
 	b, err := json.Marshal(res)
 	if err != nil {
-		log.Event(ctx, "error marshalling json response", log.ERROR, log.Error(err), logData)
+		log.Error(ctx, "error marshalling json response", err, logData)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	log.Event(ctx, "get hierarchy node for code successful", log.INFO, logData)
+	log.Info(ctx, "get hierarchy node for code successful", logData)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(b)
