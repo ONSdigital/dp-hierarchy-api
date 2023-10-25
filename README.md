@@ -17,12 +17,22 @@ returning children and parents (breadcrumbs) for the requested node.
 | HEALTHCHECK_INTERVAL         | 30s                                       | The time between doing health checks
 | HEALTHCHECK_CRITICAL_TIMEOUT | 90s                                       | The time taken for the health changes from warning state to critical due to subsystem check failures
 
+#### Graph / Neptune Configuration
+
+| Environment variable    | Default | Description
+| ------------------------| ------- | -----------
+| GRAPH_DRIVER_TYPE       | ""      | string identifier for the implementation to be used (e.g. 'neptune' or 'mock')
+| GRAPH_ADDR              | ""      | address of the database matching the chosen driver type (web socket)
+| NEPTUNE_TLS_SKIP_VERIFY | false   | flag to skip TLS certificate verification, should only be true when run locally
+
+:warning: to connect to a remote Neptune environment on MacOSX using Go 1.18 or higher you must set `NEPTUNE_TLS_SKIP_VERIFY` to true. See our [Neptune guide](https://github.com/ONSdigital/dp/blob/main/guides/NEPTUNE.md) for more details.
+
 ### Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ### License
 
-Copyright © 2016-2021, Office for National Statistics (https://www.ons.gov.uk)
+Copyright © 2016-2023, Office for National Statistics (https://www.ons.gov.uk)
 
 Released under MIT license, see [LICENSE](LICENSE.md) for details
