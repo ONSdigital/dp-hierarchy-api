@@ -32,6 +32,6 @@ require (
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/smartystreets/assertions v1.13.1 // indirect
-	golang.org/x/net v0.14.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
 )
