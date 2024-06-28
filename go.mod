@@ -2,6 +2,8 @@ module github.com/ONSdigital/dp-hierarchy-api
 
 go 1.19
 
+replace golang.org/x/crypto => golang.org/x/crypto v0.17.0
+
 require (
 	github.com/ONSdigital/dp-api-clients-go v1.43.0
 	github.com/ONSdigital/dp-graph/v2 v2.17.0
@@ -33,5 +35,5 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/smartystreets/assertions v1.13.1 // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 )
