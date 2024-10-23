@@ -1,6 +1,6 @@
 module github.com/ONSdigital/dp-hierarchy-api
 
-go 1.22
+go 1.23.2
 
 require (
 	github.com/ONSdigital/dp-api-clients-go v1.43.0
