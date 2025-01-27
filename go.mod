@@ -1,6 +1,6 @@
 module github.com/ONSdigital/dp-hierarchy-api
 
-go 1.23.2
+go 1.23
 
 require (
 	github.com/ONSdigital/dp-api-clients-go v1.43.0
@@ -32,6 +32,6 @@ require (
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/smartystreets/assertions v1.13.1 // indirect
-	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/net v0.34.0 // indirect
+	golang.org/x/sys v0.29.0 // indirect
 )
