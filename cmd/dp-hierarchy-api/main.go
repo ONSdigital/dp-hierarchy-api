@@ -80,9 +80,9 @@ func main() {
 	logData := log.Data{}
 	select {
 	case sig := <-signals:
-		err = errors.New("aborting after signal")
 		logData["signal"] = sig.String()
-	case err = <-httpServerDoneChan:
+		log.Info(ctx, "aborting after signal", logData)
+	case <-httpServerDoneChan:
 		wantHTTPShutdown = false
 	}
 

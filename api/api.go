@@ -14,8 +14,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var hierarchyRoute *mux.Route
-
 type API struct {
 	store datastore.Storer
 	host  string
@@ -31,7 +29,6 @@ func New(r *mux.Router, db datastore.Storer, url string) *API {
 
 	api.r.Path("/hierarchies/{instance}/{dimension}").HandlerFunc(api.hierarchiesHandler).Name("hierarchy_url")
 	api.r.Path("/hierarchies/{instance}/{dimension}/{code}").HandlerFunc(api.codesHandler)
-	hierarchyRoute = api.r.Get("hierarchy_url")
 
 	return api
 }
@@ -78,7 +75,10 @@ func (api *API) hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	log.Info(ctx, "get hierarchy root successful", logData)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	if _, err = w.Write(b); err != nil {
+		log.Error(ctx, "hierarchiesHandler endpoint: error writing bytes to response", err, logData)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
@@ -131,7 +131,10 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 	log.Info(ctx, "get hierarchy node for code successful", logData)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(b)
+	if _, err = w.Write(b); err != nil {
+		log.Error(ctx, "codesHandler endpoint: error writing bytes to response", err, logData)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func mapHierarchyResponse(dbResponse *dbmodels.HierarchyResponse) models.Response {
