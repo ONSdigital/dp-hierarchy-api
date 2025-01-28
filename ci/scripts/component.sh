@@ -3,5 +3,5 @@
 cwd=$(pwd)
 
 pushd $cwd/dp-hierarchy-api
-  make lint
+  make test-component
 popd
