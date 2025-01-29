@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"net/url"
 
 	"github.com/ONSdigital/dp-graph/v2/graph/driver"
 	dbmodels "github.com/ONSdigital/dp-graph/v2/models"
@@ -15,16 +16,20 @@ import (
 )
 
 type API struct {
-	store datastore.Storer
-	host  string
-	r     *mux.Router
+	store              datastore.Storer
+	host               *url.URL
+	codeListAPIURL     *url.URL
+	r                  *mux.Router
+	enableURLRewriting bool
 }
 
-func New(r *mux.Router, db datastore.Storer, url string) *API {
+func New(r *mux.Router, db datastore.Storer, hierarchyAPIURL *url.URL, codeListAPIURL *url.URL, enableURLRewriting bool) *API {
 	api := &API{
-		store: db,
-		host:  url,
-		r:     r,
+		store:              db,
+		host:               hierarchyAPIURL,
+		codeListAPIURL:     codeListAPIURL,
+		r:                  r,
+		enableURLRewriting: enableURLRewriting,
 	}
 
 	api.r.Path("/hierarchies/{instance}/{dimension}").HandlerFunc(api.hierarchiesHandler).Name("hierarchy_url")
@@ -63,7 +68,7 @@ func (api *API) hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	res := mapHierarchyResponse(dbRes)
-	res.AddLinks(api.host, instance, dimension, codelistID, true)
+	res.AddLinks(api.host.String(), instance, dimension, codelistID, true)
 
 	b, err := json.Marshal(res)
 	if err != nil {
@@ -119,7 +124,7 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	res := mapHierarchyResponse(dbRes)
-	res.AddLinks(api.host, instance, dimension, codelistID, false)
+	res.AddLinks(api.host.String(), instance, dimension, codelistID, false)
 
 	b, err := json.Marshal(res)
 	if err != nil {

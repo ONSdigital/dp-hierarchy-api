@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
@@ -56,7 +57,26 @@ func main() {
 	router := mux.NewRouter()
 	router.Path("/health").HandlerFunc(hc.Handler)
 
-	api.New(router, graphDB, config.HierarchyAPIURL)
+	// store URLs using net/url URL type to prevent error checking in handlers
+	hierarchyAPIURL, err := url.Parse(config.HierarchyAPIURL)
+	if err != nil {
+		log.Fatal(ctx, "error parsing hierarchy API URL", err, log.Data{"url": config.HierarchyAPIURL})
+		os.Exit(1)
+	}
+
+	codeListAPIURL, err := url.Parse(config.CodelistAPIURL)
+	if err != nil {
+		log.Fatal(ctx, "error parsing codeList API URL", err, log.Data{"url": config.CodelistAPIURL})
+		os.Exit(1)
+	}
+
+	// check if URLRewriting is enabled
+	enableURLRewriting := config.EnableURLRewriting
+	if enableURLRewriting {
+		log.Info(ctx, "URL rewriting enabled")
+	}
+
+	api.New(router, graphDB, hierarchyAPIURL, codeListAPIURL, enableURLRewriting)
 
 	srv := dphttp.NewServer(config.BindAddr, router)
 	srv.HandleOSSignals = false

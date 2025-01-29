@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 
 	"github.com/ONSdigital/dp-graph/v2/graph/driver"
@@ -15,11 +16,11 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-const (
-	hierarchyAPIURL = "http://fake-hier"
+var (
+	router          = mux.NewRouter()
+	codeListAPIURL  = &url.URL{Scheme: "http", Host: "localhost:22400"}
+	hierarchyAPIURL = &url.URL{Scheme: "http", Host: "localhost:22600"}
 )
-
-var router = mux.NewRouter()
 
 func TestAPIResponseStatuses(t *testing.T) {
 	t.Parallel()
@@ -56,7 +57,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", nil)
 		w := httptest.NewRecorder()
 
-		api := New(router, validMockDatastore, hierarchyAPIURL)
+		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
 
 		api.hierarchiesHandler(w, r)
 		So(w.Code, ShouldEqual, http.StatusOK)
@@ -66,7 +67,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", nil)
 		w := httptest.NewRecorder()
 
-		api := New(router, validMockDatastore, hierarchyAPIURL)
+		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
 
 		api.codesHandler(w, r)
 		So(w.Code, ShouldEqual, http.StatusOK)
@@ -76,7 +77,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 		r := httptest.NewRequest("GET", "/hierarchies/none/dim34", nil)
 		w := httptest.NewRecorder()
 
-		api := New(router, notFoundMockDatastore, hierarchyAPIURL)
+		api := New(router, notFoundMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
 
 		api.hierarchiesHandler(w, r)
 		So(w.Code, ShouldEqual, http.StatusNotFound)
@@ -86,7 +87,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 		r := httptest.NewRequest("GET", "/hierarchies/none/dim34/codeN", nil)
 		w := httptest.NewRecorder()
 
-		api := New(router, notFoundMockDatastore, hierarchyAPIURL)
+		api := New(router, notFoundMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
 
 		api.codesHandler(w, r)
 		So(w.Code, ShouldEqual, http.StatusNotFound)
