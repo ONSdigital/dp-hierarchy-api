@@ -14,6 +14,7 @@ type Config struct {
 	HealthCheckInterval        time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
 	CodelistAPIURL             string        `envconfig:"CODE_LIST_URL"`
+	EnableURLRewriting         bool          `envconfig:"ENABLE_URL_REWRITING"`
 }
 
 var configuration *Config
@@ -28,6 +29,7 @@ func Get() (*Config, error) {
 			HealthCheckInterval:        30 * time.Second,
 			HealthCheckCriticalTimeout: 90 * time.Second,
 			CodelistAPIURL:             "http://localhost:22400",
+			EnableURLRewriting:         false,
 		}
 		if err := envconfig.Process("", configuration); err != nil {
 			return nil, err

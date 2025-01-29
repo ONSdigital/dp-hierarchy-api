@@ -19,6 +19,7 @@ func TestGetReturnsDefaultValues(t *testing.T) {
 			ShutdownTimeout:            5 * time.Second,
 			HealthCheckInterval:        30 * time.Second,
 			HealthCheckCriticalTimeout: 90 * time.Second,
+			EnableURLRewriting:         false,
 		})
 	})
 }
