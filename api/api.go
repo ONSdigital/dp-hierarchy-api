@@ -9,6 +9,7 @@ import (
 	"github.com/ONSdigital/dp-graph/v2/graph/driver"
 	dbmodels "github.com/ONSdigital/dp-graph/v2/models"
 	"github.com/ONSdigital/dp-hierarchy-api/datastore"
+	"github.com/ONSdigital/dp-net/v2/links"
 
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 	"github.com/ONSdigital/log.go/v2/log"
@@ -68,7 +69,14 @@ func (api *API) hierarchiesHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	res := mapHierarchyResponse(dbRes)
-	res.AddLinks(api.host.String(), instance, dimension, codelistID, true)
+
+	if api.enableURLRewriting {
+		hierarchyLinksBuilder := links.FromHeadersOrDefault(&req.Header, req, api.host)
+		codeListLinksBuilder := links.FromHeadersOrDefault(&req.Header, req, api.codeListAPIURL)
+		res.AddLinksWithRewriting(hierarchyLinksBuilder.URL.String(), codeListLinksBuilder.URL.String(), instance, dimension, codelistID, true)
+	} else {
+		res.AddLinks(api.host.String(), instance, dimension, codelistID, true)
+	}
 
 	b, err := json.Marshal(res)
 	if err != nil {
@@ -124,7 +132,14 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	res := mapHierarchyResponse(dbRes)
-	res.AddLinks(api.host.String(), instance, dimension, codelistID, false)
+
+	if api.enableURLRewriting {
+		hierarchyLinksBuilder := links.FromHeadersOrDefault(&req.Header, req, api.host)
+		codeListLinksBuilder := links.FromHeadersOrDefault(&req.Header, req, api.codeListAPIURL)
+		res.AddLinksWithRewriting(hierarchyLinksBuilder.URL.String(), codeListLinksBuilder.URL.String(), instance, dimension, codelistID, false)
+	} else {
+		res.AddLinks(api.host.String(), instance, dimension, codelistID, false)
+	}
 
 	b, err := json.Marshal(res)
 	if err != nil {

@@ -63,6 +63,31 @@ func TestAPIResponseStatuses(t *testing.T) {
 		So(w.Code, ShouldEqual, http.StatusOK)
 	})
 
+	Convey("When asking for a hierarchy with URL rewriting enabled from an external host, we get a basic json response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", nil)
+		addExternalHeaders(r)
+		w := httptest.NewRecorder()
+
+		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, true)
+
+		api.hierarchiesHandler(w, r)
+		So(w.Body.String(), ShouldContainSubstring, `"https://api.example.com/v1/code-lists/codelistID/codes"`)
+		So(w.Body.String(), ShouldContainSubstring, `"https://api.example.com/v1/hierarchies//"`)
+		So(w.Code, ShouldEqual, http.StatusOK)
+	})
+
+	Convey("When asking for a hierarchy with URL rewriting enabled from an internal host, we get a basic json response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", nil)
+		w := httptest.NewRecorder()
+
+		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, true)
+
+		api.hierarchiesHandler(w, r)
+		So(w.Body.String(), ShouldContainSubstring, `"http://localhost:22400/code-lists/codelistID/codes"`)
+		So(w.Body.String(), ShouldContainSubstring, `"http://localhost:22600/hierarchies//"`)
+		So(w.Code, ShouldEqual, http.StatusOK)
+	})
+
 	Convey("When asking for a hierarchy node, we get a basic json response", t, func() {
 		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", nil)
 		w := httptest.NewRecorder()
@@ -70,6 +95,31 @@ func TestAPIResponseStatuses(t *testing.T) {
 		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
 
 		api.codesHandler(w, r)
+		So(w.Code, ShouldEqual, http.StatusOK)
+	})
+
+	Convey("When asking for a hierarchy node with URL rewriting enabled from an external host, we get a basic json response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", nil)
+		addExternalHeaders(r)
+		w := httptest.NewRecorder()
+
+		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, true)
+
+		api.codesHandler(w, r)
+		So(w.Body.String(), ShouldContainSubstring, `"https://api.example.com/v1/code-lists/codelistID/codes"`)
+		So(w.Body.String(), ShouldContainSubstring, `"https://api.example.com/v1/hierarchies//"`)
+		So(w.Code, ShouldEqual, http.StatusOK)
+	})
+
+	Convey("When asking for a hierarchy node with URL rewriting enabled from an internal host, we get a basic json response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", nil)
+		w := httptest.NewRecorder()
+
+		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, true)
+
+		api.codesHandler(w, r)
+		So(w.Body.String(), ShouldContainSubstring, `"http://localhost:22400/code-lists/codelistID/codes"`)
+		So(w.Body.String(), ShouldContainSubstring, `"http://localhost:22600/hierarchies//"`)
 		So(w.Code, ShouldEqual, http.StatusOK)
 	})
 
@@ -171,4 +221,10 @@ func TestMapHierarchyResponse(t *testing.T) {
 		}
 		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
 	})
+}
+
+func addExternalHeaders(req *http.Request) {
+	req.Header.Add("X-Forwarded-Proto", "https")
+	req.Header.Add("X-Forwarded-Host", "api.example.com")
+	req.Header.Add("X-Forwarded-Path-Prefix", "/v1")
 }
