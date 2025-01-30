@@ -98,3 +98,48 @@ func GetLinkWithID(baseURL string, linkID, id string) *Link {
 	}
 	return &Link{HRef: baseURL + "/" + linkID, ID: id}
 }
+
+// AddLinksWithRewriting adds links (self, codelist and populates children links) when enableURLRewriting is true
+func (r *Response) AddLinksWithRewriting(host, codeListURL, instanceID, dimensionName, codelistID string, isRoot bool) {
+	if r.Links == nil {
+		r.Links = make(map[string]Link)
+	}
+
+	if isRoot {
+		r.Links["self"] = *GetLink(fmt.Sprintf(rootFormat, host, instanceID, dimensionName), "")
+	} else {
+		r.Links["self"] = *GetLinkWithID(fmt.Sprintf(rootFormat, host, instanceID, dimensionName), r.ID, r.ID)
+	}
+
+	r.Links["code"] = *GetLinkWithID(fmt.Sprintf(codelistFormat, codeListURL, codelistID), r.ID, r.ID)
+
+	for _, child := range r.Children {
+		child.AddRewrittenLinks(host, codeListURL, instanceID, dimensionName, codelistID, true)
+	}
+
+	an := len(r.Breadcrumbs)
+	for i, crumb := range r.Breadcrumbs {
+
+		withID := true
+		if i == (an - 1) {
+			withID = false
+		}
+
+		crumb.AddRewrittenLinks(host, codeListURL, instanceID, dimensionName, codelistID, withID)
+	}
+}
+
+// AddRewrittenLinks adds self and codelist links for Elements when enableURLRewriting is true
+func (e *Element) AddRewrittenLinks(host, codeListURL, instanceID, dimensionName, codelistID string, withID bool) {
+	if e.Links == nil {
+		e.Links = make(map[string]Link)
+	}
+
+	if !withID {
+		e.Links["self"] = *GetLink(fmt.Sprintf(rootFormat, host, instanceID, dimensionName), "")
+	} else {
+		e.Links["self"] = *GetLinkWithID(fmt.Sprintf(rootFormat, host, instanceID, dimensionName), e.ID, e.ID)
+	}
+
+	e.Links["code"] = *GetLinkWithID(fmt.Sprintf(codelistFormat, codeListURL, codelistID), e.ID, e.ID)
+}

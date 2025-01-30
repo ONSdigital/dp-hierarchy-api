@@ -82,7 +82,7 @@ func main() {
 	srv.HandleOSSignals = false
 
 	// put constants into model
-	models.CodelistURL = config.CodelistAPIURL
+	models.CodelistURL = codeListAPIURL.String()
 
 	// start http server
 	httpServerDoneChan := make(chan error)
