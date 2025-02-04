@@ -12,7 +12,7 @@ import (
 	"github.com/ONSdigital/dp-hierarchy-api/models"
 
 	"github.com/gorilla/mux"
-	. "github.com/smartystreets/goconvey/convey"
+	"github.com/smartystreets/goconvey/convey"
 )
 
 const (
@@ -25,84 +25,84 @@ func TestAPIResponseStatuses(t *testing.T) {
 	t.Parallel()
 
 	validMockDatastore := &datastoretest.StorerMock{
-		GetHierarchyRootFunc: func(ctx context.Context, instanceID, dimension string) (*dbmodels.HierarchyResponse, error) {
+		GetHierarchyRootFunc: func(_ context.Context, _, _ string) (*dbmodels.HierarchyResponse, error) {
 			return &dbmodels.HierarchyResponse{
 				Label: "validlabel",
 			}, nil
 		},
-		GetHierarchyElementFunc: func(ctx context.Context, instanceID, dimension, code string) (*dbmodels.HierarchyResponse, error) {
+		GetHierarchyElementFunc: func(_ context.Context, _, _, _ string) (*dbmodels.HierarchyResponse, error) {
 			return &dbmodels.HierarchyResponse{
 				Label: "validlabel",
 			}, nil
 		},
-		GetHierarchyCodelistFunc: func(ctx context.Context, instanceID, dimension string) (string, error) {
+		GetHierarchyCodelistFunc: func(_ context.Context, _, _ string) (string, error) {
 			return "codelistID", nil
 		},
 	}
 
 	notFoundMockDatastore := &datastoretest.StorerMock{
-		GetHierarchyRootFunc: func(ctx context.Context, instanceID, dimension string) (*dbmodels.HierarchyResponse, error) {
+		GetHierarchyRootFunc: func(_ context.Context, _, _ string) (*dbmodels.HierarchyResponse, error) {
 			return nil, driver.ErrNotFound
 		},
-		GetHierarchyElementFunc: func(ctx context.Context, instanceID, dimension, code string) (*dbmodels.HierarchyResponse, error) {
+		GetHierarchyElementFunc: func(_ context.Context, _, _, _ string) (*dbmodels.HierarchyResponse, error) {
 			return nil, driver.ErrNotFound
 		},
-		GetHierarchyCodelistFunc: func(ctx context.Context, instanceID, dimension string) (string, error) {
+		GetHierarchyCodelistFunc: func(_ context.Context, _, _ string) (string, error) {
 			return "", driver.ErrNotFound
 		},
 	}
 
-	Convey("When asking for a hierarchy, we get a basic json response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", nil)
+	convey.Convey("When asking for a hierarchy, we get a basic json response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, validMockDatastore, hierarchyAPIURL)
 
 		api.hierarchiesHandler(w, r)
-		So(w.Code, ShouldEqual, http.StatusOK)
+		convey.So(w.Code, convey.ShouldEqual, http.StatusOK)
 	})
 
-	Convey("When asking for a hierarchy node, we get a basic json response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", nil)
+	convey.Convey("When asking for a hierarchy node, we get a basic json response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, validMockDatastore, hierarchyAPIURL)
 
 		api.codesHandler(w, r)
-		So(w.Code, ShouldEqual, http.StatusOK)
+		convey.So(w.Code, convey.ShouldEqual, http.StatusOK)
 	})
 
-	Convey("When asking for a non-existant hierarchy, we get a 404 response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/none/dim34", nil)
+	convey.Convey("When asking for a non-existant hierarchy, we get a 404 response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/none/dim34", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, notFoundMockDatastore, hierarchyAPIURL)
 
 		api.hierarchiesHandler(w, r)
-		So(w.Code, ShouldEqual, http.StatusNotFound)
+		convey.So(w.Code, convey.ShouldEqual, http.StatusNotFound)
 	})
 
-	Convey("When asking for a non-existant hierarchy node, we get a 404 response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/none/dim34/codeN", nil)
+	convey.Convey("When asking for a non-existant hierarchy node, we get a 404 response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/none/dim34/codeN", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, notFoundMockDatastore, hierarchyAPIURL)
 
 		api.codesHandler(w, r)
-		So(w.Code, ShouldEqual, http.StatusNotFound)
+		convey.So(w.Code, convey.ShouldEqual, http.StatusNotFound)
 	})
 }
 
 func TestMapHierarchyResponse(t *testing.T) {
 	t.Parallel()
 
-	Convey("An empty DB response is mapped to an empty API response", t, func() {
+	convey.Convey("An empty DB response is mapped to an empty API response", t, func() {
 		dbResponse := &dbmodels.HierarchyResponse{}
 		expected := models.Response{}
-		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
+		convey.So(mapHierarchyResponse(dbResponse), convey.ShouldResemble, expected)
 	})
 
-	Convey("A populated DB response without children or breadcrumbs is mapped to the corresponding API response", t, func() {
+	convey.Convey("A populated DB response without children or breadcrumbs is mapped to the corresponding API response", t, func() {
 		var order int64 = 123
 		dbResponse := &dbmodels.HierarchyResponse{
 			ID:      "testID",
@@ -116,10 +116,10 @@ func TestMapHierarchyResponse(t *testing.T) {
 			Order:   &order,
 			HasData: true,
 		}
-		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
+		convey.So(mapHierarchyResponse(dbResponse), convey.ShouldResemble, expected)
 	})
 
-	Convey("A DB response with children is mapped to the corresponding API response", t, func() {
+	convey.Convey("A DB response with children is mapped to the corresponding API response", t, func() {
 		var order int64 = 321
 		dbResponse := &dbmodels.HierarchyResponse{
 			Children: []*dbmodels.HierarchyElement{
@@ -143,10 +143,10 @@ func TestMapHierarchyResponse(t *testing.T) {
 			},
 			NoOfChildren: 1,
 		}
-		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
+		convey.So(mapHierarchyResponse(dbResponse), convey.ShouldResemble, expected)
 	})
 
-	Convey("A DB response with breadcrumbs is mapped to the corresponding API response", t, func() {
+	convey.Convey("A DB response with breadcrumbs is mapped to the corresponding API response", t, func() {
 		var order int64 = 456
 		dbResponse := &dbmodels.HierarchyResponse{
 			Breadcrumbs: []*dbmodels.HierarchyElement{
@@ -168,6 +168,6 @@ func TestMapHierarchyResponse(t *testing.T) {
 				},
 			},
 		}
-		So(mapHierarchyResponse(dbResponse), ShouldResemble, expected)
+		convey.So(mapHierarchyResponse(dbResponse), convey.ShouldResemble, expected)
 	})
 }

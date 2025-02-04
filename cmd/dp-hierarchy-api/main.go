@@ -28,14 +28,12 @@ var (
 )
 
 func main() {
-
 	ctx := context.Background()
 	log.Namespace = "dp-hierarchy-api"
 
 	config, err := config.Get()
 	if err != nil {
 		log.Fatal(ctx, "error getting config", err)
-		os.Exit(1)
 	}
 
 	signals := make(chan os.Signal, 1)
@@ -45,7 +43,6 @@ func main() {
 	graphDB, err := graph.NewHierarchyStore(ctx)
 	if err != nil {
 		log.Fatal(ctx, "error creating hierarchy store", err)
-		os.Exit(1)
 	}
 
 	graphErrorConsumer := graph.NewLoggingErrorConsumer(ctx, graphDB.Errors)
@@ -68,8 +65,8 @@ func main() {
 	httpServerDoneChan := make(chan error)
 	go func() {
 		log.Info(ctx, "starting http server", log.Data{"bind_addr": config.BindAddr})
-		if err := srv.ListenAndServe(); err != nil {
-			log.Error(ctx, "http server error", err)
+		if listenErr := srv.ListenAndServe(); listenErr != nil {
+			log.Error(ctx, "http server error", listenErr)
 		}
 		close(httpServerDoneChan)
 	}()
@@ -93,27 +90,26 @@ func main() {
 	hasShutdownError := false
 
 	go func() {
-
 		log.Info(ctx, "stopping health checks")
 		hc.Stop()
 
 		if wantHTTPShutdown {
 			log.Info(ctx, "stopping http server")
-			if err := srv.Shutdown(shutdownContext); err != nil {
-				log.Error(ctx, "error closing http server", err)
+			if httpErr := srv.Shutdown(shutdownContext); httpErr != nil {
+				log.Error(ctx, "error closing http server", httpErr)
 				hasShutdownError = true
 			}
 		}
 
 		log.Info(ctx, "closing graph db connection")
-		if err := graphDB.Close(shutdownContext); err != nil {
-			log.Error(ctx, "error closing db connection", err)
+		if dbErr := graphDB.Close(shutdownContext); dbErr != nil {
+			log.Error(ctx, "error closing db connection", dbErr)
 			hasShutdownError = true
 		}
 
 		log.Info(ctx, "closing graph db error consumer")
-		if err := graphErrorConsumer.Close(shutdownContext); err != nil {
-			log.Error(ctx, "error closing graph db error consumer", err)
+		if consumerErr := graphErrorConsumer.Close(shutdownContext); consumerErr != nil {
+			log.Error(ctx, "error closing graph db error consumer", consumerErr)
 			hasShutdownError = true
 		}
 
@@ -134,12 +130,10 @@ func main() {
 }
 
 func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph.DB) *healthcheck.HealthCheck {
-
 	hasErrors := false
 	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, Version)
 	if err != nil {
 		log.Fatal(ctx, "error creating version info", err)
-		hasErrors = true
 	}
 
 	hc := healthcheck.New(versionInfo, config.HealthCheckCriticalTimeout, config.HealthCheckInterval)

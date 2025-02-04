@@ -58,7 +58,6 @@ func (r *Response) AddLinks(host, instanceID, dimensionName, codelistID string, 
 
 	an := len(r.Breadcrumbs)
 	for i, crumb := range r.Breadcrumbs {
-
 		withID := true
 		if i == (an - 1) {
 			withID = false
@@ -84,7 +83,7 @@ func (e *Element) AddLinks(host, instanceID, dimensionName, codelistID string, w
 }
 
 // GetLink returns a Link{id,href} object for the given url/id (or just url if id is empty)
-func GetLink(baseURL string, linkID string) *Link {
+func GetLink(baseURL, linkID string) *Link {
 	if linkID == "" {
 		return &Link{HRef: baseURL}
 	}
@@ -92,7 +91,7 @@ func GetLink(baseURL string, linkID string) *Link {
 }
 
 // GetLinkWithID returns a Link{id,href} object for the given url/id (or just url if id is empty)
-func GetLinkWithID(baseURL string, linkID, id string) *Link {
+func GetLinkWithID(baseURL, linkID, id string) *Link {
 	if linkID == "" {
 		return &Link{HRef: baseURL, ID: id}
 	}

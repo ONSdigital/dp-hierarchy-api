@@ -138,7 +138,6 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func mapHierarchyResponse(dbResponse *dbmodels.HierarchyResponse) models.Response {
-
 	response := models.Response{
 		ID:           dbResponse.ID,
 		Label:        dbResponse.Label,
@@ -153,11 +152,10 @@ func mapHierarchyResponse(dbResponse *dbmodels.HierarchyResponse) models.Respons
 }
 
 func mapHierarchyElements(dbElements []*dbmodels.HierarchyElement) []*models.Element {
-
+	//nolint:prealloc // Consider pre-allocating `elements`
 	var elements []*models.Element
 
 	for _, dbElement := range dbElements {
-
 		element := &models.Element{
 			ID:           dbElement.ID,
 			Label:        dbElement.Label,
