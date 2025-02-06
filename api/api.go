@@ -24,7 +24,7 @@ type API struct {
 	enableURLRewriting bool
 }
 
-func New(r *mux.Router, db datastore.Storer, hierarchyAPIURL *url.URL, codeListAPIURL *url.URL, enableURLRewriting bool) *API {
+func New(r *mux.Router, db datastore.Storer, hierarchyAPIURL, codeListAPIURL *url.URL, enableURLRewriting bool) *API {
 	api := &API{
 		store:              db,
 		host:               hierarchyAPIURL,
@@ -158,7 +158,6 @@ func (api *API) codesHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func mapHierarchyResponse(dbResponse *dbmodels.HierarchyResponse) models.Response {
-
 	response := models.Response{
 		ID:           dbResponse.ID,
 		Label:        dbResponse.Label,
@@ -173,11 +172,10 @@ func mapHierarchyResponse(dbResponse *dbmodels.HierarchyResponse) models.Respons
 }
 
 func mapHierarchyElements(dbElements []*dbmodels.HierarchyElement) []*models.Element {
-
+	//nolint:prealloc // Causes unit tests to fail []*models.Element(nil){} is not equal to []*models.Element{}
 	var elements []*models.Element
 
 	for _, dbElement := range dbElements {
-
 		element := &models.Element{
 			ID:           dbElement.ID,
 			Label:        dbElement.Label,

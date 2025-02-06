@@ -26,35 +26,35 @@ func TestAPIResponseStatuses(t *testing.T) {
 	t.Parallel()
 
 	validMockDatastore := &datastoretest.StorerMock{
-		GetHierarchyRootFunc: func(ctx context.Context, instanceID, dimension string) (*dbmodels.HierarchyResponse, error) {
+		GetHierarchyRootFunc: func(_ context.Context, _, _ string) (*dbmodels.HierarchyResponse, error) {
 			return &dbmodels.HierarchyResponse{
 				Label: "validlabel",
 			}, nil
 		},
-		GetHierarchyElementFunc: func(ctx context.Context, instanceID, dimension, code string) (*dbmodels.HierarchyResponse, error) {
+		GetHierarchyElementFunc: func(_ context.Context, _, _, _ string) (*dbmodels.HierarchyResponse, error) {
 			return &dbmodels.HierarchyResponse{
 				Label: "validlabel",
 			}, nil
 		},
-		GetHierarchyCodelistFunc: func(ctx context.Context, instanceID, dimension string) (string, error) {
+		GetHierarchyCodelistFunc: func(_ context.Context, _, _ string) (string, error) {
 			return "codelistID", nil
 		},
 	}
 
 	notFoundMockDatastore := &datastoretest.StorerMock{
-		GetHierarchyRootFunc: func(ctx context.Context, instanceID, dimension string) (*dbmodels.HierarchyResponse, error) {
+		GetHierarchyRootFunc: func(_ context.Context, _, _ string) (*dbmodels.HierarchyResponse, error) {
 			return nil, driver.ErrNotFound
 		},
-		GetHierarchyElementFunc: func(ctx context.Context, instanceID, dimension, code string) (*dbmodels.HierarchyResponse, error) {
+		GetHierarchyElementFunc: func(_ context.Context, _, _, _ string) (*dbmodels.HierarchyResponse, error) {
 			return nil, driver.ErrNotFound
 		},
-		GetHierarchyCodelistFunc: func(ctx context.Context, instanceID, dimension string) (string, error) {
+		GetHierarchyCodelistFunc: func(_ context.Context, _, _ string) (string, error) {
 			return "", driver.ErrNotFound
 		},
 	}
 
 	Convey("When asking for a hierarchy, we get a basic json response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", nil)
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
@@ -64,7 +64,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 	})
 
 	Convey("When asking for a hierarchy with URL rewriting enabled from an external host, we get a basic json response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", nil)
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", http.NoBody)
 		addExternalHeaders(r)
 		w := httptest.NewRecorder()
 
@@ -77,7 +77,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 	})
 
 	Convey("When asking for a hierarchy with URL rewriting enabled from an internal host, we get a basic json response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", nil)
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, true)
@@ -89,7 +89,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 	})
 
 	Convey("When asking for a hierarchy node, we get a basic json response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", nil)
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
@@ -99,7 +99,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 	})
 
 	Convey("When asking for a hierarchy node with URL rewriting enabled from an external host, we get a basic json response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", nil)
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", http.NoBody)
 		addExternalHeaders(r)
 		w := httptest.NewRecorder()
 
@@ -112,7 +112,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 	})
 
 	Convey("When asking for a hierarchy node with URL rewriting enabled from an internal host, we get a basic json response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", nil)
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, true)
@@ -124,7 +124,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 	})
 
 	Convey("When asking for a non-existant hierarchy, we get a 404 response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/none/dim34", nil)
+		r := httptest.NewRequest("GET", "/hierarchies/none/dim34", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, notFoundMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
@@ -134,7 +134,7 @@ func TestAPIResponseStatuses(t *testing.T) {
 	})
 
 	Convey("When asking for a non-existant hierarchy node, we get a 404 response", t, func() {
-		r := httptest.NewRequest("GET", "/hierarchies/none/dim34/codeN", nil)
+		r := httptest.NewRequest("GET", "/hierarchies/none/dim34/codeN", http.NoBody)
 		w := httptest.NewRecorder()
 
 		api := New(router, notFoundMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
