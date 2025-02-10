@@ -35,6 +35,7 @@ func main() {
 	config, err := config.Get()
 	if err != nil {
 		log.Fatal(ctx, "error getting config", err)
+		os.Exit(1)
 	}
 
 	signals := make(chan os.Signal, 1)
@@ -44,6 +45,7 @@ func main() {
 	graphDB, err := graph.NewHierarchyStore(ctx)
 	if err != nil {
 		log.Fatal(ctx, "error creating hierarchy store", err)
+		os.Exit(1)
 	}
 
 	graphErrorConsumer := graph.NewLoggingErrorConsumer(ctx, graphDB.Errors)
@@ -154,6 +156,7 @@ func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph
 	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, Version)
 	if err != nil {
 		log.Fatal(ctx, "error creating version info", err)
+		hasErrors = true
 	}
 
 	hc := healthcheck.New(versionInfo, config.HealthCheckCriticalTimeout, config.HealthCheckInterval)
