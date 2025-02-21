@@ -8,14 +8,15 @@ returning children and parents (breadcrumbs) for the requested node.
 
 ### Configuration
 
-| Environment variable         | Default                                   | Description
-| ---------------------------- | ----------------------------------------- | -----------
-| BIND_ADDR                    | :22600                                    | The host and port to bind to
-| HIERARCHY_API_URL            | http://localhost:22600                    | The external address of this API
-| GRACEFUL_SHUTDOWN_TIMEOUT    | 5s                                        | The graceful shutdown timeout (Go `time.Duration` format)
-| CODE_LIST_URL                | http://localhost:22400                    | The external address of the Code List API
-| HEALTHCHECK_INTERVAL         | 30s                                       | The time between doing health checks
-| HEALTHCHECK_CRITICAL_TIMEOUT | 90s                                       | The time taken for the health changes from warning state to critical due to subsystem check failures
+| Environment variable         | Default                                  | Description
+| ---------------------------- |------------------------------------------| -----------
+| BIND_ADDR                    | :22600                                   | The host and port to bind to
+| HIERARCHY_API_URL            | http://localhost:22600                   | The external address of this API
+| GRACEFUL_SHUTDOWN_TIMEOUT    | 5s                                       | The graceful shutdown timeout (Go `time.Duration` format)
+| CODE_LIST_URL                | http://localhost:22400                   | The external address of the Code List API
+| HEALTHCHECK_INTERVAL         | 30s                                      | The time between doing health checks
+| HEALTHCHECK_CRITICAL_TIMEOUT | 90s                                      | The time taken for the health changes from warning state to critical due to subsystem check failures
+| ENABLE_URL_REWRITING         | false                                    | Feature flag to enable URL rewriting
 
 #### Graph / Neptune Configuration
 
