@@ -9,7 +9,7 @@ import (
 
 func TestGetReturnsDefaultValues(t *testing.T) {
 	t.Parallel()
-	Convey("When a loading a configuration, default values are return", t, func() {
+	Convey("When loading a configuration, default values are returned", t, func() {
 		config, err := Get()
 		So(err, ShouldBeNil)
 		So(config, ShouldResemble, &Config{
