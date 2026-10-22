@@ -32,7 +32,7 @@ func main() {
 	ctx := context.Background()
 	log.Namespace = "dp-hierarchy-api"
 
-	config, err := config.Get()
+	cfg, err := config.Get()
 	if err != nil {
 		log.Fatal(ctx, "error getting config", err)
 		os.Exit(1)
@@ -50,43 +50,43 @@ func main() {
 
 	graphErrorConsumer := graph.NewLoggingErrorConsumer(ctx, graphDB.Errors)
 
-	hc := startHealthCheck(ctx, config, graphDB)
+	hc := startHealthCheck(ctx, cfg, graphDB)
 
 	// setup http server
 	router := mux.NewRouter()
 	router.Path("/health").HandlerFunc(hc.Handler)
 
 	// store URLs using net/url URL type to prevent error checking in handlers
-	hierarchyAPIURL, err := url.Parse(config.HierarchyAPIURL)
+	hierarchyAPIURL, err := url.Parse(cfg.HierarchyAPIURL)
 	if err != nil {
-		log.Fatal(ctx, "error parsing hierarchy API URL", err, log.Data{"url": config.HierarchyAPIURL})
+		log.Fatal(ctx, "error parsing hierarchy API URL", err, log.Data{"url": cfg.HierarchyAPIURL})
 		os.Exit(1)
 	}
 
-	codeListAPIURL, err := url.Parse(config.CodelistAPIURL)
+	codeListAPIURL, err := url.Parse(cfg.CodelistAPIURL)
 	if err != nil {
-		log.Fatal(ctx, "error parsing codeList API URL", err, log.Data{"url": config.CodelistAPIURL})
+		log.Fatal(ctx, "error parsing codeList API URL", err, log.Data{"url": cfg.CodelistAPIURL})
 		os.Exit(1)
 	}
 
 	// check if URLRewriting is enabled
-	enableURLRewriting := config.EnableURLRewriting
+	enableURLRewriting := cfg.EnableURLRewriting
 	if enableURLRewriting {
 		log.Info(ctx, "URL rewriting enabled")
 	}
 
 	api.New(router, graphDB, hierarchyAPIURL, codeListAPIURL, enableURLRewriting)
 
-	srv := dphttp.NewServer(config.BindAddr, router)
+	srv := dphttp.NewServer(cfg.BindAddr, router)
 	srv.HandleOSSignals = false
 
 	// put constants into model
 	models.CodelistURL = codeListAPIURL.String()
 
 	// start http server
-	httpServerDoneChan := make(chan error)
+	httpServerDoneChan := make(chan struct{})
 	go func() {
-		log.Info(ctx, "starting http server", log.Data{"bind_addr": config.BindAddr})
+		log.Info(ctx, "starting http server", log.Data{"bind_addr": cfg.BindAddr})
 		if listenErr := srv.ListenAndServe(); listenErr != nil {
 			log.Error(ctx, "http server error", listenErr)
 		}
@@ -106,9 +106,9 @@ func main() {
 	}
 
 	// gracefully shutdown the application, closing any open resources
-	logData["timeout"] = config.ShutdownTimeout
+	logData["timeout"] = cfg.ShutdownTimeout
 	log.Info(ctx, "start shutdown", logData)
-	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), config.ShutdownTimeout)
+	shutdownContext, shutdownContextCancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
 	hasShutdownError := false
 
 	go func() {
@@ -151,7 +151,7 @@ func main() {
 	os.Exit(0)
 }
 
-func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph.DB) *healthcheck.HealthCheck {
+func startHealthCheck(ctx context.Context, cfg *config.Config, graphDB *graph.DB) *healthcheck.HealthCheck {
 	hasErrors := false
 	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, Version)
 	if err != nil {
@@ -159,14 +159,14 @@ func startHealthCheck(ctx context.Context, config *config.Config, graphDB *graph
 		hasErrors = true
 	}
 
-	hc := healthcheck.New(versionInfo, config.HealthCheckCriticalTimeout, config.HealthCheckInterval)
+	hc := healthcheck.New(versionInfo, cfg.HealthCheckCriticalTimeout, cfg.HealthCheckInterval)
 
 	if err = hc.AddCheck("Graph DB", graphDB.Checker); err != nil {
 		hasErrors = true
 		log.Error(ctx, "error adding check for graph db", err)
 	}
 
-	codeListAPIHealthCheckClient := health.NewClient("Code List API", config.CodelistAPIURL)
+	codeListAPIHealthCheckClient := health.NewClient("Code List API", cfg.CodelistAPIURL)
 	if err = hc.AddCheck("Code List API", codeListAPIHealthCheckClient.Checker); err != nil {
 		log.Error(ctx, "error creating code list API health check", err)
 		hasErrors = true
