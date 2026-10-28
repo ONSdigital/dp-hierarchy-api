@@ -33,8 +33,8 @@ func New(r *mux.Router, db datastore.Storer, hierarchyAPIURL, codeListAPIURL *ur
 		enableURLRewriting: enableURLRewriting,
 	}
 
-	api.r.Path("/hierarchies/{instance}/{dimension}").HandlerFunc(api.hierarchiesHandler).Name("hierarchy_url")
-	api.r.Path("/hierarchies/{instance}/{dimension}/{code}").HandlerFunc(api.codesHandler)
+	api.r.Path("/hierarchies/{instance:[A-Za-z0-9_-]+}/{dimension:[A-Za-z0-9_-]+}").HandlerFunc(api.hierarchiesHandler).Name("hierarchy_url")
+	api.r.Path("/hierarchies/{instance:[A-Za-z0-9_-]+}/{dimension:[A-Za-z0-9_-]+}/{code:[A-Za-z0-9_-]+}").HandlerFunc(api.codesHandler)
 
 	return api
 }

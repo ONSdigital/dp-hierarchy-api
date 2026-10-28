@@ -142,6 +142,41 @@ func TestAPIResponseStatuses(t *testing.T) {
 		api.codesHandler(w, r)
 		So(w.Code, ShouldEqual, http.StatusNotFound)
 	})
+
+	Convey("When asking for an invalid hierarchy node, we get a 404 response and no database calls are made", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/none/dim34/!@1223...()", http.NoBody)
+		w := httptest.NewRecorder()
+
+		api := New(router, notFoundMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
+
+		api.codesHandler(w, r)
+		So(w.Code, ShouldEqual, http.StatusNotFound)
+		So(len(notFoundMockDatastore.GetHierarchyElementCalls()), ShouldEqual, 0)
+		So(len(notFoundMockDatastore.GetHierarchyRootCalls()), ShouldEqual, 0)
+	})
+
+	Convey("When asking for an invalid hierarchy, we get a 404 response and no database calls are made", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/!.()hello/dim34", http.NoBody)
+		w := httptest.NewRecorder()
+
+		api := New(router, notFoundMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
+
+		api.hierarchiesHandler(w, r)
+		So(w.Code, ShouldEqual, http.StatusNotFound)
+		So(len(notFoundMockDatastore.GetHierarchyRootCalls()), ShouldEqual, 0)
+	})
+
+	Convey("When asking for an invalid dimension, we get a 404 response and no database calls are made", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/..()something", http.NoBody)
+		w := httptest.NewRecorder()
+
+		api := New(router, notFoundMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
+
+		api.hierarchiesHandler(w, r)
+		So(w.Code, ShouldEqual, http.StatusNotFound)
+		So(len(notFoundMockDatastore.GetHierarchyRootCalls()), ShouldEqual, 0)
+		So(len(notFoundMockDatastore.GetHierarchyElementCalls()), ShouldEqual, 0)
+	})
 }
 
 func TestMapHierarchyResponse(t *testing.T) {
