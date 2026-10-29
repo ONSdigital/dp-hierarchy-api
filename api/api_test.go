@@ -98,6 +98,16 @@ func TestAPIResponseStatuses(t *testing.T) {
 		So(w.Code, ShouldEqual, http.StatusOK)
 	})
 
+	Convey("When asking for a hierarchy node with a + character, we get a basic json response", t, func() {
+		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN+", http.NoBody)
+		w := httptest.NewRecorder()
+
+		api := New(router, validMockDatastore, hierarchyAPIURL, codeListAPIURL, false)
+
+		api.codesHandler(w, r)
+		So(w.Code, ShouldEqual, http.StatusOK)
+	})
+
 	Convey("When asking for a hierarchy node with URL rewriting enabled from an external host, we get a basic json response", t, func() {
 		r := httptest.NewRequest("GET", "/hierarchies/hier12/dim34/codeN", http.NoBody)
 		addExternalHeaders(r)
